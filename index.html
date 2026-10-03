@@ -131,7 +131,7 @@
       background:var(--tip-bg);border-radius:999px;padding:7px 8px 7px 14px;
       box-shadow:0 8px 24px rgba(0,0,0,.3);
     }
-    .preview-badge button{
+    .preview-badge a{
       border:0;border-radius:999px;background:rgba(0,0,0,.15);color:inherit;
       font:inherit;font-size:12px;padding:3px 10px;cursor:pointer;
     }
@@ -271,7 +271,7 @@
       <div id="contacts-list"></div>
     </section>
   </main>
-  <div class="preview-badge" id="preview-badge" hidden>预览模式 · 未发布 <button type="button" id="exit-preview">退出</button></div>
+  <div class="preview-badge" id="preview-badge" hidden>预览模式 · 未发布 <a id="exit-preview" href="/">退出</a></div>
   <div class="page-fade" aria-hidden="true"></div>
   <button type="button" class="chat-fab" id="chat-open" aria-label="来找我聊聊">
     <svg viewBox="0 0 48 36" aria-hidden="true">
@@ -526,7 +526,6 @@
     // —— 预览模式：显示徽章，退出即回正式版 ——
     if(PREVIEW){
       $('preview-badge').hidden=false;
-      $('exit-preview').onclick=()=>{location.href='index.html'};
     }
 
     // —— 聊天弹窗：微信 / 邮箱两个标签页 ——
