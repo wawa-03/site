@@ -311,6 +311,7 @@
     // 预览模式：?preview=1 时用 admin 存在 localStorage 的草稿渲染
     let PREVIEW=false;
     if(new URLSearchParams(location.search).has('preview')){
+      history.replaceState(null,'',location.pathname);
       try{
         const p=JSON.parse(localStorage.getItem('my-life-admin-draft'));
         if(p&&Object.keys(p).length){Object.assign(SITE,p);PREVIEW=true}
