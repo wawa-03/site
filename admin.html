@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MY LIFE — Admin（第三维度）</title>
+<!--
+  这是网站的第三维度：只给你自己用的内容控制台。
+  用法：
+  1. 用浏览器打开本文件（它会读取同目录的 data.js）
+  2. 编辑内容（自动存草稿到浏览器）
+  3. 点「导出 data.js」，把下载的文件覆盖 site/data.js
+  4. 重新部署网站 → 内容更新
+  本文件不会被部署，别人看不到。
+-->
+<style>
+  :root{color-scheme:light;--bg:#f2f2ef;--text:#1d1d1b;--secondary:#3b3b36;--muted:#8a8a83;--line:#d9d9d4}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;padding:32px clamp(16px,4vw,64px) 80px}
+  h1{font-size:16px;letter-spacing:.1em;font-weight:500;margin:0 0 6px}
+  .sub{font-size:12px;color:var(--muted);margin:0 0 28px;line-height:1.9}
+  .sub code{color:var(--secondary)}
+  section{border-top:1px solid var(--line);padding:24px 0}
+  h2{font-size:10px;font-weight:400;letter-spacing:.14em;color:var(--muted);margin:0 0 18px}
+  label{display:block;font-size:11px;color:var(--muted);margin:14px 0 4px}
+  input,textarea,select{width:100%;background:#fff;border:1px solid var(--line);border-radius:8px;color:var(--text);font:inherit;font-size:13px;padding:8px 10px}
+  textarea{resize:vertical;min-height:60px}
+  input:focus,textarea:focus,select:focus{outline:1px solid #8a8a83;outline-offset:0}
+  .row{display:flex;gap:10px}
+  .row>*{flex:1}
+  .card{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;position:relative}
+  .card .del{position:absolute;right:8px;top:8px;border:0;background:none;color:var(--muted);cursor:pointer;font-size:15px;padding:4px 8px}
+  .card .del:hover{color:#c05050}
+  button.act{border:1px solid var(--line);background:none;color:var(--secondary);border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;letter-spacing:.05em}
+  button.act:hover{color:var(--text);border-color:#8a8a83}
+  button.primary{background:#1d1d1b;color:#f2f2ef;border-color:#1d1d1b;font-weight:500}
+  button.primary:hover{background:#000}
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px}
+  .status{font-size:12px;color:var(--muted)}
+  .status.ok{color:#4a7a3a}
+  .hint{font-size:11px;color:var(--muted);margin-top:6px}
+  .howto{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:#666;background:#f0efe9;border:1px solid #ddd9cf;border-radius:8px;padding:10px 14px;margin:0 0 18px}
+  .howto b{color:#1d1d1d}
+  .pub{margin-top:14px;padding:12px 14px;border:1px solid #ddd9cf;border-radius:8px;font-size:12px;color:#666;display:flex;flex-direction:column;gap:8px}
+  .pub b{color:#1d1d1d}
+  .pub .row{display:flex;gap:10px}
+  .pub .row>div{flex:1;display:flex;flex-direction:column;gap:3px}
+  .pub input{font:inherit;padding:5px 8px;border:1px solid #ccc7bc;border-radius:4px;background:#fff}
+  #publish{cursor:pointer;background:#1d1d1d;color:#fff;border:0;border-radius:4px;padding:7px 12px;font-size:13px}
+  #publish:disabled{opacity:.5}
+</style>
+</head>
+<body>
+<h1>MY LIFE — ADMIN</h1>
+<p class="sub">第三维度：这里改内容 → <b>导出 data.js</b> → 覆盖 <code>site/data.js</code> → 重新部署。草稿自动存在本浏览器。<br>本文件只属于你，不要部署到线上。</p>
+
+<section>
+  <h2>SETTINGS</h2>
+  <div class="row">
+    <div><label>出生日期</label><input id="f-birth" type="date"></div>
+    <div><label>邮箱（写信链接）</label><input id="f-email" type="email"></div>
+  </div>
+  <label>身份句（左上角，一行一条）</label>
+  <textarea id="f-tagline" rows="2"></textarea>
+  <label>微信（handle 显示名；qr 填图片文件名，放 assets/）</label>
+  <div class="row"><div><label>显示名</label><input id="f-wx-handle"></div>
+  <div><label>二维码文件名</label><input id="f-wx-qr" placeholder="wechat-qr.png"></div></div>
+  <label>联系（label + href；href 留空则灰显不可点）</label>
+  <div id="contacts"></div>
+  <button class="act" id="add-contact">＋ 添加联系方式</button>
+</section>
+
+<section>
+  <h2>最近 7 年（花时间最长的事，上限 7 条）</h2>
+  <div id="longterm"></div>
+  <button class="act" id="add-longterm">＋ 添加一条</button>
+</section>
+
+<section>
+  <h2>RECORDS（周历上的记录）</h2>
+  <div id="records"></div>
+  <button class="act" id="add-record">＋ 添加记录</button>
+  <p class="hint">日期格式：2026-08-05（单周）或 2026-08（整月）。重要级：record 普通 / important 重要 / major 最重要。photo 填图片文件名（放在 site 目录里），留空则不显示。</p>
+</section>
+
+<div class="bar">
+  <button class="act primary" id="export">导出 data.js</button>
+  <button id="btn-preview" onclick="window.open('index.html?preview=1')">▶ 在网站上预览</button>
+  <div class="pub">
+    <b>一键发布</b>（迁到 GitHub Pages 后激活；Token 只存你自己浏览器，不上传任何地方）
+    <div class="row">
+      <div><label>GitHub 用户名</label><input id="gh-user"></div>
+      <div><label>仓库名</label><input id="gh-repo" placeholder="site"></div>
+      <div><label>Token（repo 权限）</label><input id="gh-token" type="password"></div>
+    </div>
+    <button id="publish" class="primary">✅ 确认发布（提交 data.js 到仓库）</button>
+  </div>
+  <button class="act" id="reset">放弃草稿，重新加载 data.js</button>
+  <span class="status" id="status"></span>
+</div>
+
+<script src="data.js"></script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const KEY='my-life-admin-draft';
+let draft;
+
+function loadDraft(){
+  const saved=localStorage.getItem(KEY);
+  if(saved){try{return JSON.parse(saved)}catch(e){}}
+  return JSON.parse(JSON.stringify(window.SITE||{}));
+}
+draft=loadDraft();
+draft.records=draft.records||[];draft.longterm=draft.longterm||[];draft.contacts=draft.contacts||[];draft.wechat=draft.wechat||{qr:"",handle:""};
+draft.tagline=draft.tagline||[];
+let statusTimer=0;
+function say(msg,ok){
+  const s=$('status');s.textContent=msg;s.className='status'+(ok?' ok':'');
+  clearTimeout(statusTimer);
+  statusTimer=setTimeout(()=>{s.textContent=''},4000);
+}
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(draft));
+  say('草稿已自动保存（仅在本浏览器）',true);
+}
+const lines=s=>(s||'').split('\n').map(x=>x.trim()).filter(Boolean);
+
+// —— SETTINGS ——
+function fillSettings(){
+  $('f-birth').value=draft.birth||'';
+  $('f-email').value=draft.email||'';
+  $('f-tagline').value=draft.tagline.join('\n');
+  $('f-wx-handle').value=draft.wechat?.handle||'';
+  $('f-wx-qr').value=draft.wechat?.qr||'';
+}
+$('f-birth').oninput=e=>{draft.birth=e.target.value;save()};
+$('f-email').oninput=e=>{draft.email=e.target.value.trim();save()};
+$('f-tagline').oninput=e=>{draft.tagline=lines(e.target.value);save()};
+
+// —— 联系 ——
+function renderContacts(){
+  const box=$('contacts');box.replaceChildren();
+  draft.contacts.forEach((c,i)=>{
+    const card=document.createElement('div');card.className='card';
+    card.innerHTML=`<button class="del" title="删除">×</button>
+      <div class="row"><div><label>名称</label><input data-k="label" data-i="${i}"></div>
+      <div><label>链接（留空=灰显）</label><input data-k="href" data-i="${i}" placeholder="https://... 或 mailto:..."></div></div>`;
+    card.querySelector('.del').onclick=()=>{draft.contacts.splice(i,1);save();renderContacts()};
+    card.querySelectorAll('[data-k]').forEach(el=>{
+      el.value=c[el.dataset.k]||'';
+      el.oninput=()=>{c[el.dataset.k]=el.value;save()};
+    });
+    box.append(card);
+  });
+}
+$('add-contact').onclick=()=>{draft.contacts.push({label:'',href:''});save();renderContacts()};
+
+// —— 最近 7 年 ——
+function renderLongterm(){
+  const box=$('longterm');box.replaceChildren();
+  draft.longterm.forEach((w,i)=>{
+    const card=document.createElement('div');card.className='card';
+    card.innerHTML=`<button class="del" title="删除">×</button>
+      <label>标题</label><input data-k="title" data-i="${i}">
+      <div class="row"><div><label>年份</label><input data-k="years" data-i="${i}"></div></div>
+      <label>描述</label><textarea data-k="desc" data-i="${i}"></textarea>`;
+    card.querySelector('.del').onclick=()=>{draft.longterm.splice(i,1);save();renderLongterm()};
+    card.querySelectorAll('[data-k]').forEach(el=>{
+      el.value=w[el.dataset.k]||'';
+      el.oninput=()=>{w[el.dataset.k]=el.value;save()};
+    });
+    box.append(card);
+  });
+}
+$('add-longterm').onclick=()=>{draft.longterm.push({title:'',years:'',desc:'',link:''});save();renderLongterm()};
+
+// —— RECORDS ——
+function renderRecords(){
+  const box=$('records');box.replaceChildren();
+  const sorted=draft.records.map((r,i)=>({r,i}))
+    .sort((a,b)=>(a.r.date||'').localeCompare(b.r.date||''));
+  sorted.forEach(({r,i})=>{
+    const card=document.createElement('div');card.className='card';
+    card.innerHTML=`<button class="del" title="删除">×</button>
+      <div class="row">
+        <div><label>日期</label><input data-k="date" data-i="${i}" placeholder="2026-08-05 或 2026-08"></div>
+        <div><label>重要级</label><select data-k="importance" data-i="${i}">
+          <option value="record">record（普通）</option>
+          <option value="important">important（重要）</option>
+          <option value="major">major（最重要）</option>
+        </select></div>
+      </div>
+      <div class="row"><div><label>念头次数（高频优先，默认 1）</label><input data-k="freq" data-i="${i}" type="number" min="1"></div>
+        <div><label>阶段性（出国/成家/入师门等转折）</label><select data-k="stage" data-i="${i}"><option value="">否</option><option value="true">是</option></select></div></div>
+      <label>内容</label><textarea data-k="text" data-i="${i}"></textarea>
+      <label>照片文件名（可选，放 site 目录）</label><input data-k="photo" data-i="${i}" placeholder="week-2026-32.jpg">`;
+    card.querySelector('.del').onclick=()=>{draft.records.splice(i,1);save();renderRecords()};
+    card.querySelectorAll('[data-k]').forEach(el=>{
+      const k=el.dataset.k;
+      if(k==='stage')el.value=String(r.stage===true||r.stage==='true'?'true':'');
+      else el.value=r[k]??'';
+      el.oninput=el.onchange=()=>{
+        if(k==='freq')r.freq=el.value?Number(el.value):'';
+        else if(k==='stage')r.stage=el.value==='true';
+        else r[k]=el.value;
+        save();
+      };
+    });
+    box.append(card);
+  });
+}
+$('add-record').onclick=()=>{
+  draft.records.push({date:'',importance:'record',text:'',photo:''});
+  save();renderRecords();
+};
+
+// —— 导出 / 重置 ——
+$('export').onclick=()=>{
+  const body=`// data.js —— 网站的全部内容。第三维度的产物：改这里 = 改网站。\n// 由 admin.html 导出于 ${new Date().toISOString().slice(0,10)}\nwindow.SITE = ${JSON.stringify(draft,null,2)};\n`;
+  const blob=new Blob([body],{type:'text/javascript'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='data.js';a.click();
+  URL.revokeObjectURL(a.href);
+  say('已导出 data.js —— 覆盖 site/data.js 后重新部署即可',true);
+};
+$('reset').onclick=()=>{
+  localStorage.removeItem(KEY);
+  draft=JSON.parse(JSON.stringify(window.SITE||{}));
+  draft.records=draft.records||[];draft.longterm=draft.longterm||[];draft.contacts=draft.contacts||[];
+  draft.tagline=draft.tagline||[];draft.wechat=draft.wechat||{qr:'',handle:''};
+  fillSettings();renderContacts();renderLongterm();renderRecords();
+  say('已放弃草稿，回到 data.js 当前内容');
+};
+$('f-wx-handle').oninput=e=>{draft.wechat.handle=e.target.value;save()};
+$('f-wx-qr').oninput=e=>{draft.wechat.qr=e.target.value;save()};
+
+fillSettings();renderContacts();renderLongterm();renderRecords();
+if(localStorage.getItem(KEY))say('检测到未导出的草稿，已恢复');
+
+// —— 一键发布：把当前草稿提交到 GitHub 仓库的 data.js（Pages 自动生效）——
+const GHKEY='my-life-gh-config';
+const ghFill=()=>{
+  const c=JSON.parse(localStorage.getItem(GHKEY)||'{}');
+  $('gh-user').value=c.user||'';$('gh-repo').value=c.repo||'';$('gh-token').value=c.token||'';
+};
+const ghSave=()=>{
+  localStorage.setItem(GHKEY,JSON.stringify({user:$('gh-user').value.trim(),repo:$('gh-repo').value.trim(),token:$('gh-token').value.trim()}));
+};
+['gh-user','gh-repo','gh-token'].forEach(id=>$(id).oninput=ghSave);
+ghFill();
+$('publish').onclick=async()=>{
+  const c=JSON.parse(localStorage.getItem(GHKEY)||'{}');
+  if(!c.user||!c.repo||!c.token){say('先填全 GitHub 用户名 / 仓库 / Token',true);return}
+  const body=`// data.js —— 由 admin.html 一键发布于 ${new Date().toISOString().slice(0,16)}
+window.SITE = ${JSON.stringify(draft,null,2)};
+`;
+  const api=`https://api.github.com/repos/${c.user}/${c.repo}/contents/data.js`;
+  const H={Authorization:'Bearer '+c.token,Accept:'application/vnd.github+json'};
+  $('publish').disabled=true;say('发布中…',true);
+  try{
+    let sha;
+    const res=await fetch(api,{headers:H});
+    if(res.ok){sha=(await res.json()).sha}
+    else if(res.status!==404){throw new Error('读仓库失败 HTTP '+res.status)}
+    const put=await fetch(api,{method:'PUT',headers:{...H,'Content-Type':'application/json'},
+      body:JSON.stringify({message:'admin 一键发布',content:btoa(unescape(encodeURIComponent(body))),sha})});
+    if(!put.ok){throw new Error('提交失败 HTTP '+put.status)}
+    say('✅ 已提交！GitHub Pages 约 1 分钟后自动全网生效',true);
+  }catch(e){say('❌ 发布失败：'+e.message,true)}
+  $('publish').disabled=false;
+};
+if(localStorage.getItem(KEY))say('检测到未导出的草稿，已恢复');
+</script>
+</body>
+</html>
