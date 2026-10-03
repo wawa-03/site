@@ -48,9 +48,17 @@
   .pub input{font:inherit;padding:5px 8px;border:1px solid #ccc7bc;border-radius:4px;background:#fff}
   #publish{cursor:pointer;background:#1d1d1d;color:#fff;border:0;border-radius:4px;padding:7px 12px;font-size:13px}
   #publish:disabled{opacity:.5}
+  body.gated>*:not(#gate){visibility:hidden}
 </style>
 </head>
 <body>
+<div id="gate" style="position:fixed;inset:0;background:#f2f2ef;z-index:999;display:flex;align-items:center;justify-content:center">
+  <div style="text-align:center">
+    <p style="font-size:13px;color:#8a8a83;margin:0 0 14px">这里是编辑后台<br>请输入编辑密码</p>
+    <input id="gate-pw" type="password" style="font:inherit;font-size:14px;padding:9px 12px;border:1px solid #d9d9d4;border-radius:8px;width:200px;text-align:center" autofocus>
+    <br><button id="gate-go" style="font:inherit;font-size:13px;margin-top:12px;padding:7px 20px;background:#1d1d1b;color:#f2f2ef;border:0;border-radius:8px;cursor:pointer">进入</button>
+  </div>
+</div>
 <h1>MY LIFE — ADMIN</h1>
 <p class="sub">第三维度：这里改内容 → <b>导出 data.js</b> → 覆盖 <code>site/data.js</code> → 重新部署。草稿自动存在本浏览器。<br>本文件只属于你，不要部署到线上。</p>
 
@@ -85,7 +93,6 @@
 
 <div class="bar">
   <button class="act primary" id="export">导出 data.js</button>
-  <button id="btn-preview" onclick="window.open('index.html?preview=1')">▶ 在网站上预览</button>
   <div class="pub">
     <b>一键发布</b>（迁到 GitHub Pages 后激活；Token 只存你自己浏览器，不上传任何地方）
     <div class="row">
@@ -237,6 +244,28 @@ $('f-wx-qr').oninput=e=>{draft.wechat.qr=e.target.value;save()};
 
 fillSettings();renderContacts();renderLongterm();renderRecords();
 if(localStorage.getItem(KEY))say('检测到未导出的草稿，已恢复');
+
+// —— 密码门：SHA-256 校验，通过后本会话免输 ——
+const GATE_HASH='24cd1ce9d03507b8f3a4905b0fa25691a529a63b923a1e7c86ea549fd5e61f0a';
+async function gateCheck(){
+  const pw=document.getElementById('gate-pw').value;
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw));
+  const hash=[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  if(hash===GATE_HASH){
+    sessionStorage.setItem('admin-ok','1');
+    document.getElementById('gate').remove();
+  }else{
+    document.getElementById('gate-pw').value='';
+    document.getElementById('gate-pw').placeholder='不对，再想';
+  }
+}
+document.getElementById('gate-go').onclick=gateCheck;
+document.getElementById('gate-pw').addEventListener('keydown',e=>{if(e.key==='Enter')gateCheck()});
+if(sessionStorage.getItem('admin-ok')==='1'){
+  document.getElementById('gate').remove();
+}else{
+  document.body.classList.add('gated');
+}
 
 // —— 一键发布：把当前草稿提交到 GitHub 仓库的 data.js（Pages 自动生效）——
 const GHKEY='my-life-gh-config';
