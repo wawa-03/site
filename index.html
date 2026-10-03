@@ -124,17 +124,6 @@
     .contact-item.off{color:var(--muted);opacity:.55;cursor:default}
     .sec-icon{display:block;margin:0 auto 16px;width:36px;height:auto}
     .sec-icon path{fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-    /* —— 预览模式徽章 —— */
-    .preview-badge{
-      position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:30;
-      display:flex;align-items:center;gap:10px;font-size:12px;color:var(--tip-fg);
-      background:var(--tip-bg);border-radius:999px;padding:7px 8px 7px 14px;
-      box-shadow:0 8px 24px rgba(0,0,0,.3);
-    }
-    .preview-badge a{
-      border:0;border-radius:999px;background:rgba(0,0,0,.15);color:inherit;
-      font:inherit;font-size:12px;padding:3px 10px;cursor:pointer;
-    }
     /* —— 底部渐糊带 + 聊天悬浮按钮 + 聊天弹窗 —— */
     .page-fade{
       position:fixed;left:0;right:0;bottom:0;height:110px;z-index:12;pointer-events:none;
@@ -271,7 +260,6 @@
       <div id="contacts-list"></div>
     </section>
   </main>
-  <div class="preview-badge" id="preview-badge" hidden>预览模式 · 未发布 <a id="exit-preview" href="/">退出</a></div>
   <div class="page-fade" aria-hidden="true"></div>
   <button type="button" class="chat-fab" id="chat-open" aria-label="来找我聊聊">
     <svg viewBox="0 0 48 36" aria-hidden="true">
@@ -308,15 +296,6 @@
     'use strict';
     // —— 内容全部来自 data.js（window.SITE）。没有后端，访客只能看。 ——
     const SITE=window.SITE||{};
-    // 预览模式：?preview=1 时用 admin 存在 localStorage 的草稿渲染
-    let PREVIEW=false;
-    if(new URLSearchParams(location.search).has('preview')){
-      history.replaceState(null,'',location.pathname);
-      try{
-        const p=JSON.parse(localStorage.getItem('my-life-admin-draft'));
-        if(p&&Object.keys(p).length){Object.assign(SITE,p);PREVIEW=true}
-      }catch(e){}
-    }
     const DAY=86400000,WEEK=7*DAY;
     const [BY,BM,BD]=(SITE.birth||'2002-02-17').split('-').map(Number);
     const BIRTH=Date.UTC(BY,BM-1,BD);
@@ -522,11 +501,6 @@
     if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>setTimeout(buildFrame,60));
     let frameT=0;
     window.addEventListener('resize',()=>{clearTimeout(frameT);frameT=setTimeout(()=>{buildFrame();startFrameLoop()},150)});
-
-    // —— 预览模式：显示徽章，退出即回正式版 ——
-    if(PREVIEW){
-      $('preview-badge').hidden=false;
-    }
 
     // —— 聊天弹窗：微信 / 邮箱两个标签页 ——
     const cmDialog=$('contact-modal');
