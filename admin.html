@@ -76,6 +76,9 @@
   <label>联系（label + href；href 留空则灰显不可点）</label>
   <div id="contacts"></div>
   <button class="act" id="add-contact">＋ 添加联系方式</button>
+  <label>做过的事（板块条目：名称 / 效果 / 踩的坑）</label>
+  <div id="projects-box"></div>
+  <button class="act" id="add-project">＋ 添加一条</button>
 </section>
 
 <section>
@@ -119,7 +122,7 @@ function loadDraft(){
   return JSON.parse(JSON.stringify(window.SITE||{}));
 }
 draft=loadDraft();
-draft.records=draft.records||[];draft.longterm=draft.longterm||[];draft.contacts=draft.contacts||[];draft.wechat=draft.wechat||{qr:"",handle:""};
+draft.records=draft.records||[];draft.longterm=draft.longterm||[];draft.contacts=draft.contacts||[];draft.projects=draft.projects||[];draft.wechat=draft.wechat||{qr:"",handle:""};
 draft.tagline=draft.tagline||[];
 let statusTimer=0;
 function say(msg,ok){
@@ -146,6 +149,24 @@ $('f-email').oninput=e=>{draft.email=e.target.value.trim();save()};
 $('f-tagline').oninput=e=>{draft.tagline=lines(e.target.value);save()};
 
 // —— 联系 ——
+function renderProjects(){
+  const box=$('projects-box');box.replaceChildren();
+  draft.projects.forEach((p,i)=>{
+    const card=document.createElement('div');card.className='card';
+    card.innerHTML=`<button class="del" title="删除">×</button>
+      <label>名称</label><input data-k="name" data-i="${i}">
+      <label>效果</label><input data-k="effect" data-i="${i}">
+      <label>踩的坑</label><input data-k="pit" data-i="${i}">`;
+    card.querySelector('.del').onclick=()=>{draft.projects.splice(i,1);save();renderProjects()};
+    card.querySelectorAll('[data-k]').forEach(el=>{
+      el.value=p[el.dataset.k]||'';
+      el.oninput=()=>{p[el.dataset.k]=el.value;save()};
+    });
+    box.append(card);
+  });
+}
+$('add-project').onclick=()=>{draft.projects.push({name:'',effect:'',pit:''});save();renderProjects()};
+
 function renderContacts(){
   const box=$('contacts');box.replaceChildren();
   draft.contacts.forEach((c,i)=>{
@@ -236,7 +257,8 @@ $('reset').onclick=()=>{
   draft=JSON.parse(JSON.stringify(window.SITE||{}));
   draft.records=draft.records||[];draft.longterm=draft.longterm||[];draft.contacts=draft.contacts||[];
   draft.tagline=draft.tagline||[];draft.wechat=draft.wechat||{qr:'',handle:''};
-  fillSettings();renderContacts();renderLongterm();renderRecords();
+  renderProjects();
+  fillSettings();renderProjects();renderContacts();renderLongterm();renderRecords();
   say('已放弃草稿，回到 data.js 当前内容');
 };
 $('f-wx-handle').oninput=e=>{draft.wechat.handle=e.target.value;save()};
