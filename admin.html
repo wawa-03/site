@@ -154,6 +154,7 @@ function renderProjects(){
   draft.projects.forEach((p,i)=>{
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`<button class="del" title="删除">×</button>
+      <div class="row"><div><label>时间（如 2026.04 – 06）</label><input data-k="time" data-i="${i}"></div></div>
       <label>名称</label><input data-k="name" data-i="${i}">
       <label>效果</label><input data-k="effect" data-i="${i}">
       <label>踩的坑</label><input data-k="pit" data-i="${i}">`;
