@@ -122,10 +122,6 @@
       .contact-item a:hover{transform:scale(1.02);color:var(--hover-text)}
     }
     .contact-item.off{color:var(--muted);opacity:.55;cursor:default}
-    .proj{margin:0 0 20px}
-    .proj-name{font-size:14px;font-weight:500;margin:0 0 6px}
-    .proj-eff{font-size:13px;margin:0 0 4px}
-    .proj-pit{font-size:13px;color:var(--muted);margin:0}
     .sec-icon{display:block;margin:0 auto 16px;width:36px;height:auto}
     .sec-icon path{fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
     /* —— 底部渐糊带 + 聊天悬浮按钮 + 聊天弹窗 —— */
@@ -531,13 +527,13 @@
       $('cm-mail-link').textContent=SITE.email;
     }
 
-    // —— 做过的事 ——
+    // —— 做过的事（与全站条目同款 .ev）——
     (SITE.projects||[]).forEach(p=>{
-      const box=$('projects-list');
-      const name=document.createElement('p');name.className='proj-name';name.textContent=p.name;
-      const eff=document.createElement('p');eff.className='proj-eff';eff.textContent=p.effect;
-      const pit=document.createElement('p');pit.className='proj-pit';pit.textContent=p.pit;
-      box.append(name,eff,pit);
+      const div=document.createElement('div');div.className='ev';
+      const p1=document.createElement('p');p1.textContent=`${p.name}。${p.effect||''}`;
+      const p2=document.createElement('p');p2.textContent=p.pit||'';
+      div.append(p1,p2);
+      $('projects-list').append(div);
     });
 
     // —— 主题：固定亮色（data-theme="light" 写在 <html> 上）；月亮图标保留作装饰 ——
