@@ -141,12 +141,14 @@ function fillSettings(){
   $('f-birth').value=draft.birth||'';
   $('f-email').value=draft.email||'';
   $('f-tagline').value=draft.tagline.join('\n');
+  $('f-positioning').value=draft.positioning||'';
   $('f-wx-handle').value=draft.wechat?.handle||'';
   $('f-wx-qr').value=draft.wechat?.qr||'';
 }
 $('f-birth').oninput=e=>{draft.birth=e.target.value;save()};
 $('f-email').oninput=e=>{draft.email=e.target.value.trim();save()};
 $('f-tagline').oninput=e=>{draft.tagline=lines(e.target.value);save()};
+$('f-positioning').oninput=e=>{draft.positioning=e.target.value;save()};
 
 // —— 联系 ——
 function renderProjects(){
