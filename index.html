@@ -124,10 +124,7 @@
     .contact-item.off{color:var(--muted);opacity:.55;cursor:default}
     .sec-icon{display:block;margin:0 auto 16px;width:36px;height:auto}
     .sec-icon path{fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-    /* —— 三问板块 —— */
     #positioning{font-size:13px;color:var(--secondary);margin:10px 0 0}
-    .ask{margin:0 0 34px}
-    .ask-title{font-size:10px;letter-spacing:.14em;color:var(--muted);margin:0 0 16px;text-transform:uppercase}
     /* —— 底部渐糊带 + 聊天悬浮按钮 + 聊天弹窗 —— */
     .page-fade{
       position:fixed;left:0;right:0;bottom:0;height:110px;z-index:12;pointer-events:none;
@@ -248,10 +245,7 @@
       <div id="weeks" role="group" aria-label="人生周历"></div>
       <noscript>启用 JavaScript 后可查看周历。</noscript>
     </section>
-    <section class="asks-sec" aria-labelledby="asks-title">
-      <h2 id="asks-title" class="sr-only">我能帮你什么</h2>
-      <div id="asks-list"></div>
-    </section>
+
     <section class="year-sec" id="year-section" aria-labelledby="year-title">
       <h2 id="year-title">今年</h2>
       <div id="year-list"></div>
@@ -540,21 +534,6 @@
 
     // —— 定位句 ——
     if(SITE.positioning){const po=document.getElementById('positioning');po.textContent=SITE.positioning}
-
-    // —— 三问（钉子做小灰字标尺，内容同款）——
-    (SITE.asks||[]).forEach(a=>{
-      const sec=document.createElement('div');sec.className='ask';
-      const h=document.createElement('p');h.className='ask-title';h.textContent=a.section;
-      sec.append(h);
-      a.lines.forEach(l=>{
-        const div=document.createElement('div');div.className='ev';
-        if(l.nail){const m=document.createElement('span');m.className='meta';m.textContent=l.nail;div.append(m)}
-        const p=document.createElement('p');p.textContent=l.text;
-        div.append(p);
-        sec.append(div);
-      });
-      $('asks-list').append(sec);
-    });
 
     // —— 做过的事（与全站条目同款 .ev）——
     (SITE.projects||[]).forEach(p=>{
