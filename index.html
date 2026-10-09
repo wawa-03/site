@@ -125,6 +125,21 @@
     .sec-icon{display:block;margin:0 auto 16px;width:36px;height:auto}
     .sec-icon path{fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
     #positioning{font-size:13px;color:var(--secondary);margin:10px 0 0}
+    /* —— 项目轮播卡 —— */
+    .hint{font-size:10px;color:var(--muted);letter-spacing:.05em;font-weight:400}
+    .rail{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+    .rail::-webkit-scrollbar{display:none}
+    .pcard{
+      flex:0 0 176px;height:176px;scroll-snap-align:start;
+      display:flex;flex-direction:column;justify-content:space-between;
+      background:var(--panel);border:1px solid var(--panel-line);border-radius:14px;
+      padding:16px;text-decoration:none;
+      transition:transform .15s,border-color .15s;
+    }
+    .pcard .k{font-size:10px;letter-spacing:.12em;color:var(--muted)}
+    .pcard .n{font-size:14px;color:var(--text);line-height:1.5}
+    .pcard .t{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+    @media(hover:hover){.pcard:hover{transform:translateY(-3px);border-color:var(--muted)}}
     /* —— 底部渐糊带 + 聊天悬浮按钮 + 聊天弹窗 —— */
     .page-fade{
       position:fixed;left:0;right:0;bottom:0;height:110px;z-index:12;pointer-events:none;
@@ -255,8 +270,8 @@
       <div id="longterm-list"></div>
     </section>
     <section class="projects-sec" aria-labelledby="projects-title">
-      <h2 id="projects-title">做过的事</h2>
-      <div id="projects-list"></div>
+      <h2 id="projects-title">做过的事 <span class="hint">点开看过程</span></h2>
+      <div id="projects-list" class="rail"></div>
     </section>
 
 
@@ -535,14 +550,14 @@
     // —— 定位句 ——
     if(SITE.positioning){const po=document.getElementById('positioning');po.textContent=SITE.positioning}
 
-    // —— 做过的事（与全站条目同款 .ev）——
+    // —— 做过的事：横向轮播卡，点开进子页 ——
     (SITE.projects||[]).forEach(p=>{
-      const div=document.createElement('div');div.className='ev';
-      const m=document.createElement('span');m.className='meta';m.textContent=p.time||'';
-      const p1=document.createElement('p');p1.textContent=`${p.name}。${p.effect||''}`;
-      const p2=document.createElement('p');p2.textContent=p.pit||'';
-      div.append(m,p1,p2);
-      $('projects-list').append(div);
+      const card=document.createElement('a');card.className='pcard';card.href='projects/'+p.slug+'.html';
+      const k=document.createElement('span');k.className='k';k.textContent=p.k||'';
+      const n=document.createElement('span');n.className='n';n.textContent=p.name;
+      const t=document.createElement('span');t.className='t';t.textContent=(p.time||'')+(p.where?' · '+p.where:'');
+      card.append(k,n,t);
+      $('projects-list').append(card);
     });
 
     // —— 主题：固定亮色（data-theme="light" 写在 <html> 上）；月亮图标保留作装饰 ——
