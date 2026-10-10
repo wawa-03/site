@@ -140,6 +140,16 @@
     .pcard .n{font-size:14px;color:var(--text);line-height:1.5}
     .pcard .t{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
     @media(hover:hover){.pcard:hover{transform:translateY(-3px);border-color:var(--muted)}}
+    .rail-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:2px}
+    .rail-btn{
+      width:30px;height:30px;border-radius:50%;border:1px solid var(--panel-line);
+      background:var(--panel);color:var(--muted);font-size:16px;line-height:1;
+      cursor:pointer;transition:border-color .15s,color .15s;
+    }
+    .rail-btn:hover{color:var(--text);border-color:var(--muted)}
+    .dots{display:flex;gap:7px}
+    .dot{width:5px;height:5px;border-radius:50%;background:var(--panel-line);border:0;padding:0;cursor:pointer;transition:background .2s}
+    .dot.on{background:var(--muted)}
     /* —— 底部渐糊带 + 聊天悬浮按钮 + 聊天弹窗 —— */
     .page-fade{
       position:fixed;left:0;right:0;bottom:0;height:110px;z-index:12;pointer-events:none;
@@ -272,6 +282,11 @@
     <section class="projects-sec" aria-labelledby="projects-title">
       <h2 id="projects-title">做过的事 <span class="hint">点开看过程</span></h2>
       <div id="projects-list" class="rail"></div>
+      <div class="rail-nav">
+        <button type="button" id="rail-prev" class="rail-btn" aria-label="上一张">‹</button>
+        <div class="dots" id="rail-dots"></div>
+        <button type="button" id="rail-next" class="rail-btn" aria-label="下一张">›</button>
+      </div>
     </section>
 
 
@@ -559,6 +574,27 @@
       card.append(k,n,t);
       $('projects-list').append(card);
     });
+    // 轮播：自动轻滚，用户一碰就交还控制权
+    (function(){
+      const rail=$('projects-list');if(!rail)return;
+      const step=()=>{const c=rail.querySelector('.pcard');return c?c.getBoundingClientRect().width+14:190};
+      const dots=$('rail-dots');
+      const n=rail.children.length;
+      for(let i=0;i<n;i++){const d=document.createElement('button');d.type='button';d.className='dot';d.setAttribute('aria-label','第'+(i+1)+'张');d.onclick=()=>{stop();go(i)};dots.append(d)}
+      let pos=0,userTook=false;
+      const paint=()=>{[...dots.children].forEach((d,i)=>d.classList.toggle('on',i===pos))};
+      const go=i=>{pos=(i+n)%n;rail.scrollTo({left:pos*step(),behavior:'smooth'});paint()};
+      const next=()=>go(pos+1);
+      const stop=()=>{if(auto){clearInterval(auto);auto=null}};
+      let auto=null;
+      if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!userTook){
+        auto=setInterval(()=>{if(!userTook)next()},3500);
+        ['pointerdown','wheel','touchstart'].forEach(ev=>rail.addEventListener(ev,()=>{userTook=true;stop()},{passive:true}));
+      }
+      $('rail-prev').onclick=()=>{userTook=true;stop();go(pos-1)};
+      $('rail-next').onclick=()=>{userTook=true;stop();go(pos+1)};
+      paint();
+    })();
 
     // —— 主题：固定亮色（data-theme="light" 写在 <html> 上）；月亮图标保留作装饰 ——
     localStorage.removeItem('my-life-theme');
