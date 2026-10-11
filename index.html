@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f2f2ef">
-  <meta name="description" content="三禹的个人网站。一格一周，记录从 2002 年至今的人生。做 AI 工作流，也写营销文案，正在路上。">
+  <meta name="description" content="三禹：AI 提示词工程师，正在卖一种能自己验证的鲜牛奶。这个网站记着他每一周。">
   <meta property="og:type" content="website">
   <meta property="og:title" content="三禹">
   <meta property="og:description" content="一格一周，记录从 2002 年至今的人生。">
   <meta property="og:image" content="og-image.png">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%230a0a0a'/%3E%3Crect%20x='17'%20y='17'%20width='30'%20height='30'%20rx='8'%20fill='%23ecece5'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='16'%20fill='%23f2f2ef'/%3E%3Cpath%20d='M39,14%20C28,16%2021,26%2022.5,36%20C24,46%2033,52.5%2043,51.5%20C38,48.5%2035,43%2035.2,36.5%20C35.4,29%2038.5,20.5%2043.5,15.5%20C42,14.8%2040.5,14.4%2039,14%20Z'%20fill='none'%20stroke='%231d1d1b'%20stroke-width='3'%20stroke-linecap='round'/%3E%3C/svg%3E">
   <title>三禹</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -144,6 +144,7 @@
       content:"›";position:absolute;right:18px;top:50%;transform:translateY(-50%);
       font-size:18px;color:var(--muted);
     }
+    .pcard:last-child::after{content:none}
     @media(hover:hover){.pcard:hover{transform:translateY(-3px);border-color:var(--muted)}}
     /* —— 底部渐糊带 + 聊天悬浮按钮 + 聊天弹窗 —— */
     .page-fade{
@@ -525,11 +526,31 @@
       if(matchMedia('(prefers-reduced-motion: reduce)').matches){fframe=0;paintFrame();return}
       frameTimer=setInterval(()=>{fframe++;paintFrame()},1000/8);
     }
+    document.addEventListener('visibilitychange',()=>{
+      if(document.hidden){clearInterval(frameTimer);frameTimer=null}
+      else if(!frameTimer)startFrameLoop();
+    });
     buildFrame();
     startFrameLoop();
     if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>setTimeout(buildFrame,60));
     let frameT=0;
     window.addEventListener('resize',()=>{clearTimeout(frameT);frameT=setTimeout(()=>{buildFrame();startFrameLoop()},150)});
+
+    // —— 悬浮信封：进入联系区自动隐没 ——
+    (function(){
+      const fab=document.getElementById('chat-open');if(!fab)return;
+      fab.style.transition='opacity .3s,transform .3s';
+      const contacts=document.querySelector('.notes-sec');
+      if(!contacts||!('IntersectionObserver' in window))return;
+      new IntersectionObserver(es=>{
+        es.forEach(e=>{
+          const show=!e.isIntersecting;
+          fab.style.opacity=show?'1':'0';
+          fab.style.pointerEvents=show?'auto':'none';
+          fab.style.transform=show?'translateX(-50%) scale(1)':'translateX(-50%) scale(.8)';
+        });
+      },{threshold:.15}).observe(contacts);
+    })();
 
     // —— 聊天弹窗：微信 / 邮箱两个标签页 ——
     const cmDialog=$('contact-modal');
