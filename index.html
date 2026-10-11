@@ -127,18 +127,23 @@
     #positioning{font-size:13px;color:var(--secondary);margin:10px 0 0}
     /* —— 项目轮播卡 —— */
     .hint{font-size:10px;color:var(--muted);letter-spacing:.05em;font-weight:400}
-    .rail{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+    .rail{display:flex;gap:0;overflow-x:auto;padding:2px 2px 16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     .rail::-webkit-scrollbar{display:none}
     .pcard{
-      flex:0 0 176px;height:176px;scroll-snap-align:start;
+      flex:0 0 100%;height:196px;scroll-snap-align:center;
       display:flex;flex-direction:column;justify-content:space-between;
-      background:var(--panel);border:1px solid var(--panel-line);border-radius:14px;
-      padding:16px;text-decoration:none;
-      transition:transform .15s,border-color .15s;
+      background:var(--panel);border:1px solid var(--panel-line);border-radius:16px;
+      padding:22px 24px;text-decoration:none;
+      transition:border-color .15s;
+      position:relative;
     }
-    .pcard .k{font-size:10px;letter-spacing:.12em;color:var(--muted)}
-    .pcard .n{font-size:14px;color:var(--text);line-height:1.5}
+    .pcard .k{font-size:10px;letter-spacing:.14em;color:var(--muted)}
+    .pcard .n{font-size:19px;color:var(--text);line-height:1.4;max-width:70%}
     .pcard .t{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+    .pcard::after{
+      content:"›";position:absolute;right:18px;top:50%;transform:translateY(-50%);
+      font-size:18px;color:var(--muted);
+    }
     @media(hover:hover){.pcard:hover{transform:translateY(-3px);border-color:var(--muted)}}
     /* —— 底部渐糊带 + 聊天悬浮按钮 + 聊天弹窗 —— */
     .page-fade{
