@@ -140,11 +140,17 @@
     .pcard .k{font-size:10px;letter-spacing:.14em;color:var(--muted)}
     .pcard .n{font-size:19px;color:var(--text);line-height:1.4;max-width:70%}
     .pcard .t{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
-    .pcard::after{
-      content:"›";position:absolute;right:18px;top:50%;transform:translateY(-50%);
-      font-size:18px;color:var(--muted);
+    .stage{position:relative}
+    .stage-btn{
+      position:absolute;top:50%;transform:translateY(-50%);z-index:2;
+      width:34px;height:34px;border-radius:50%;border:1px solid var(--panel-line);
+      background:var(--panel);color:var(--muted);font-size:17px;line-height:1;
+      cursor:pointer;opacity:.65;transition:opacity .15s,color .15s,border-color .15s;
     }
-    .pcard:last-child::after{content:none}
+    .stage-btn:hover{opacity:1;color:var(--text);border-color:var(--muted)}
+    #stage-prev{left:-8px}
+    #stage-next{right:-8px}
+    .stage-idx{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;font-variant-numeric:tabular-nums}
     @media(hover:hover){.pcard:hover{transform:translateY(-3px);border-color:var(--muted)}}
     /* —— 底部渐糊带 + 聊天悬浮按钮 + 聊天弹窗 —— */
     .page-fade{
@@ -277,7 +283,12 @@
     </section>
     <section class="projects-sec" aria-labelledby="projects-title">
       <h2 id="projects-title">做过的事 <span class="hint">点开看过程</span></h2>
-      <div id="projects-list" class="rail"></div>
+      <div class="stage">
+        <div id="projects-list" class="rail"></div>
+        <button type="button" id="stage-prev" class="stage-btn" aria-label="上一个项目">‹</button>
+        <button type="button" id="stage-next" class="stage-btn" aria-label="下一个项目">›</button>
+        <div class="stage-idx" id="stage-idx"></div>
+      </div>
     </section>
 
 
@@ -585,6 +596,41 @@
       card.append(k,n,t);
       $('projects-list').append(card);
     });
+    // 海报轮播：自动翻、悬停停、箭头/滑动切换、末位隐藏箭头
+    (function(){
+      const rail=$('projects-list'),cards=[...rail.children];if(!cards.length)return;
+      const n=cards.length;let pos=0,timer=null,animating=false;
+      const step=()=>cards[0].getBoundingClientRect().width;
+      const paint=()=>{
+        $('stage-idx').textContent=(pos+1)+' / '+n;
+        $('stage-prev').style.visibility=pos===0?'hidden':'visible';
+        $('stage-next').style.visibility=pos===n-1?'hidden':'visible';
+      };
+      const go=i=>{
+        pos=Math.max(0,Math.min(n-1,i));
+        animating=true;
+        rail.scrollTo({left:pos*step(),behavior:'smooth'});
+        setTimeout(()=>{animating=false},450);
+        paint();
+      };
+      const stop=()=>{if(timer){clearInterval(timer);timer=null}};
+      const start=()=>{
+        if(timer)return;
+        if(matchMedia('(prefers-reduced-motion: reduce)').matches||document.hidden)return;
+        timer=setInterval(()=>go(pos+1>=n?0:pos+1),4000);
+      };
+      $('stage-prev').onclick=()=>{stop();go(pos-1)};
+      $('stage-next').onclick=()=>{stop();go(pos+1)};
+      rail.addEventListener('pointerenter',stop);
+      rail.addEventListener('pointerleave',start);
+      document.addEventListener('visibilitychange',()=>{document.hidden?stop():start()});
+      rail.addEventListener('scroll',()=>{
+        if(animating)return;
+        const p=Math.round(rail.scrollLeft/step());
+        if(p!==pos&&p>=0&&p<n){pos=p;paint()}
+      },{passive:true});
+      paint();start();
+    })();
 
 
     // —— 主题：固定亮色（data-theme="light" 写在 <html> 上）；月亮图标保留作装饰 ——
