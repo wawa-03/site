@@ -420,6 +420,7 @@
       p.level=ranks[r.importance]?r.importance:'record';
       p.freq=Math.max(1,parseInt(r.freq,10)||1);
       p.stage=r.stage===true||r.stage==='true';
+      p.skipYear=r.skipYear===true;   // true = 只进周历，不进「今年」
       p.text=r.text;p.photo=r.photo||'';
       normalized.push(p);
     });
@@ -666,17 +667,18 @@
     });
     grid.addEventListener('mouseleave',()=>tip.classList.remove('on'));
 
-    // —— 今年：当前年份的记录，上限 6 条 ——
+    // —— 今年：当前年份的记录，上限 3 条 ——
     // 选拔权重（他定的）：P1 念头次数（高频优先）> P2 花的时间（时长）> P3 阶段性 > P4 更近优先；选出后按时间正序展示
-    // 2026.10.31 补记：纯机械排序会把「芯片归档、阅读量 1」这类花絮顶上来，而真正的交付（需求提取系统、
-    // 选题系统）不在记录池里——已把它们补进 data.js 的 records，别再把算法结果当「最重要」
+    // 2026.10.31 两轮校准：① 交付类记录补进池子（原来只在 projects 里，算法够不着）；
+    // ② 「结束、进行中、纯念头」三类打 skipYear 踢出「今年」——零信息、不诚实、被动作覆盖，各占一条；
+    // ③ 上限收到 3：口子开大了花絮又会灌回来（芯片归档、写给临终前的自己都是这么漏进来的）
     const yearEvents=normalized
-      .filter(r=>new Date(r.start).getUTCFullYear()===currentYear)
+      .filter(r=>!r.skipYear && new Date(r.start).getUTCFullYear()===currentYear)
       .sort((a,b)=>((b.freq||1)-(a.freq||1))
         ||((b.w1-b.w0)-(a.w1-a.w0))
         ||((b.stage?1:0)-(a.stage?1:0))
         ||(b.start-a.start))
-      .slice(0,6)
+      .slice(0,3)
       .sort((a,b)=>a.start-b.start);
     const yearSec=$('year-section');
     if(!yearEvents.length){yearSec.remove()}
