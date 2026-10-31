@@ -27,6 +27,8 @@ window.SITE = {
   ],
   // 做过的事：网站「做过的事」板块，name/effect/pit 各一句
   projects: [
+    { k: "交付", time: "2026", where: "远程", name: "一家店铺的小程序",
+      effect: "从一张原型图到能跑的小程序，全程一个人。" },
     { slug: "ai-marketing", k: "需求", time: "2026.06", where: "柳州", name: "AI 营销系统", repo: "https://github.com/wawa-03/ai-marketing-architecture",
       effect: "从 903 份资料里洗出 8257 条真实需求，流水线跑通了一半。", pit: "卡在发布环节——做完系统才发现，最难的从来不是技术，是敢发。",
       how: "搭了一条 13 环节的流水线：采集、提取、筛选、翻译、映射、选角度、写文案……20 个 AI 员工，一个只干一个动作。外加 FastAPI 文件服务器和中文操作界面。",
@@ -66,7 +68,7 @@ window.SITE = {
     {
       years: "2023.11 — 2026.03",
       title: "AI 营销与提示词工程",
-      desc: "远程。为客户从 0 到 1 搭建 AI 内容生成系统，也在这里练出了自己的手艺。"
+      desc: "远程。一个客户做了两年一个月，从 0 到 1 搭 AI 内容生成系统，也在这里练出了手艺。"
     },
     {
       years: "2025.06 — 至今",
@@ -83,8 +85,16 @@ window.SITE = {
     { date: "2019-01", importance: "record", text: "寒假摆水果摊。自己进货、自己定价、自己看摊，面对面对客销售。", photo: "" },
     { date: "2019-07", importance: "record", text: "暑假做电话销售，开发客户、介绍课程、处理异议。拒绝听了很多。", photo: "" },
     { date: "2020-09-01", importance: "record", text: "开学，读高速铁道技术。", photo: "" },
+    { date: "2023-02", importance: "important", text: "开始系统接触 AI。", photo: "" },
     { date: "2023-06", importance: "record", text: "专科毕业。", photo: "" },
-    { date: "2023-11", importance: "important", text: "开始远程做 AI 营销与提示词工程，为客户从 0 到 1 搭建 AI 内容生成系统。", photo: "" },
+    { date: "2023-07", importance: "record", text: "还在铁路上，请了一周假去广东顺德参加 AI 研学。", photo: "" },
+    { date: "2023-08-01", importance: "major", stage: true, text: "离开铁路局。两节车厢、一次出车 8 天、月薪 3000，都不要了。", photo: "" },
+    { date: "2023-11-10", importance: "important", text: "开始以个人身份接提示词单。", photo: "" },
+    { date: "2023-11-20", importance: "major", stage: true, freq: 2, text: "第一单成交，6000 元。从接单到收钱，不到两周。", photo: "" },
+    { date: "2024-02", importance: "important", stage: true, text: "和一个客户把合作定成长期，一直做到 2026 年 3 月。", photo: "" },
+    { date: "2024-09", importance: "record", text: "对外说法定下来：00 后玩 AI，探索一人企业。", photo: "" },
+    { date: "2025-02", importance: "important", text: "定价成型：基础提示词 3000–5000，定制 8000–15000。", photo: "" },
+    { date: "2026-03-10", importance: "important", stage: true, text: "两年的长期合作结束。", photo: "" },
     { date: "2025-06", importance: "important", text: "开始做自己的 AI 营销数据系统：从社交平台采集评论，分析、分类，产出结构化需求清单。", photo: "" },
     { date: "2026-02-18", importance: "record", text: "写给临终前的自己：我受不了自己散漫的样子。这种不满意，也是推着我行动的一股力。", photo: "" },
     { date: "2026-03", importance: "record", text: "目前主要靠接 AI 工作流和营销文案的单子生活。", photo: "" },
