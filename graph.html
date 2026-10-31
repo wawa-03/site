@@ -145,12 +145,8 @@
   }
   window.addEventListener('resize', resize);
 
-  // ———————————— 布局：盘半径跟节点数走 / 盘内向日葵 / 椭圆排布 ————————————
+  // ———————————— 布局：盘半径跟节点数走 / 盘内向日葵 / 围着圈长 ————————————
   function layout(){
-    // 按「扣掉标题和控件后的可用区域」决定排布的长宽比，而不是整个窗口
-    const availW = Math.max(200, W-52), availH = Math.max(200, H-218);
-    const aspect = Math.max(0.75, Math.min(2.2, availW/availH));
-
     clusters = KINDS.map((k,ki)=>{
       const list = nodes.filter(n=>n.k===ki);
       if(!list.length) return null;
@@ -159,35 +155,33 @@
     }).filter(Boolean);
     clusters.sort((a,b)=> b.nodes.length - a.nodes.length);
 
+    // 盘和盘怎么摆（2026.11.01 改回他的围圈排法）：
+    // 最大的盘坐中间，其余按黄金角的方向贴上去；撞到已放好的盘就往外推，
+    // 直到不碰为止。全程确定性——刷新一百次形状也一样，但看着是「长出来的」不是排出来的。
     const m = clusters.length;
+    const gap = 30;
     if(m === 1){
       clusters[0].cx = 0; clusters[0].cy = 0;
     }else{
-      // 按可用区域长宽比选列数；行高按该行最大盘半径单独算，竖排不留空
-      const maxR = Math.max(...clusters.map(c=>c.R));
-      let best=null;
-      for(let c1=1;c1<=m;c1++){
-        const r1=Math.ceil(m/c1);
-        const err=Math.abs((c1)/(r1) - aspect);
-        if(!best || err<best.err) best={c1,r1,err};
+      const c0 = clusters[0];
+      c0.cx = 0; c0.cy = 0;
+      const placed = [c0];
+      const GA2 = 2.399963229728653;
+      for(let i=1;i<m;i++){
+        const c = clusters[i];
+        const j = mulberry(911 + i*173);
+        const a = i*GA2 + (j()-.5)*0.24;   // 方向固定，只带一点抖动
+        let d = c0.R + c.R + gap;
+        let x, y;
+        for(let k=0;k<80;k++){
+          x = Math.cos(a)*d; y = Math.sin(a)*d;
+          const clash = placed.some(q=> Math.hypot(x-q.cx, y-q.cy) < q.R + c.R + gap);
+          if(!clash) break;
+          d += c0.R*0.04 + 6;
+        }
+        c.cx = x; c.cy = y;
+        placed.push(c);
       }
-      const cols=best.c1, rows=best.r1;
-      const cw = maxR*2.82;
-      const rowList=[];
-      for(let r=0;r<rows;r++) rowList.push(clusters.slice(r*cols,(r+1)*cols));
-      const rowH = rowList.map(rw=> Math.max(...rw.map(c=>c.R))*2.74);
-      const totalH = rowH.reduce((a,b)=>a+b,0);
-      let y = -totalH/2;
-      rowList.forEach((rw,ri)=>{
-        const cy = y + rowH[ri]/2;
-        const inRow = rw.length;
-        rw.forEach((c,ci2)=>{
-          const j = mulberry(97 + (ri*10+ci2)*31);
-          c.cx = (ci2-(inRow-1)/2)*cw + (j()-.5)*cw*0.08;
-          c.cy = cy + (j()-.5)*rowH[ri]*0.06;
-        });
-        y += rowH[ri];
-      });
     }
 
     clusters.forEach((c,ci)=>{
