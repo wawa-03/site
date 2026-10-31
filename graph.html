@@ -198,6 +198,9 @@
         const a = i*GA + c.rot;
         nd.x = c.cx + Math.cos(a)*rr*c.elong;
         nd.y = c.cy + Math.sin(a)*rr;
+        nd.hx = nd.x; nd.hy = nd.y;      // 家：物理模拟里永远被轻轻拉回来的位置
+        nd.vx = 0; nd.vy = 0;
+        nd.wa = rnd()*Math.PI*2;         // 漂移相位
         nd.c = c;
       });
       // 每个簇只挑最大的那个当「锚点」上名字：它落在最外圈（点最稀的地方），
@@ -280,6 +283,71 @@
     for(let i=0;i<DIRS;i++) if(P[i][1]<top) top=P[i][1];
     return {cx, cy, top, path:closedBezier(P)};
   }
+  // ———————————— 物理：让地图活着（Obsidian 式） ————————————
+  // 2026.11.01 加回。之前因力导向翻车整个砍掉动画，这次用「系留式」：
+  // 每个点被轻轻拉回自己的家（向日葵位），拖拽升温、松手回落、常温下微微呼吸。
+  // 骨架永远不散——围着圈的排法不会因为物理而变样。
+  let alpha = 0.02;
+  const FLOOR = 0.02;
+  let rafId = null;
+  function reheat(v){ alpha = Math.min(1.2, Math.max(alpha, v)); }
+  function stepPhysics(){
+    alpha = Math.max(FLOOR, alpha*0.985);
+    const A = alpha;
+    // 簇内斥力：同一盘里的点互相别挤在一起
+    clusters.forEach(c=>{
+      const ns = c.nodes;
+      for(let i=0;i<ns.length;i++){
+        const a = ns[i];
+        for(let k=i+1;k<ns.length;k++){
+          const b = ns[k];
+          let dx = a.x-b.x, dy = a.y-b.y;
+          let d2 = dx*dx+dy*dy;
+          if(d2 < 0.01){ dx = Math.random()-.5; dy = Math.random()-.5; d2 = dx*dx+dy*dy; }
+          const d = Math.sqrt(d2);
+          const f = A * 220/(d2+300);
+          const fx = dx/d*f, fy = dy/d*f;
+          a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
+        }
+      }
+    });
+    nodes.forEach(n=>{
+      // 回家弹簧
+      n.vx += (n.hx-n.x)*0.05*A;
+      n.vy += (n.hy-n.y)*0.05*A;
+      // 常温呼吸：每点朝自己的相位方向慢慢漂
+      n.vx += Math.cos(n.wa)*0.02;
+      n.vy += Math.sin(n.wa)*0.02;
+      n.wa += 0.013;
+    });
+    // 簇内连线当弹簧：拖一个点，邻居会跟着晃
+    for(const e of visEdges){
+      if(e.a.c !== e.b.c) continue;
+      const dx = e.b.x-e.a.x, dy = e.b.y-e.a.y;
+      const d = Math.hypot(dx,dy) || 1;
+      if(e.rest === undefined) e.rest = d;
+      const f = (d-e.rest)*0.012*A;
+      const fx = dx/d*f, fy = dy/d*f;
+      e.a.vx += fx; e.a.vy += fy; e.b.vx -= fx; e.b.vy -= fy;
+    }
+    nodes.forEach(n=>{
+      n.vx *= 0.8; n.vy *= 0.8;
+      if(n !== dragging){ n.x += n.vx; n.y += n.vy; }
+    });
+  }
+  function loop(){
+    if(document.hidden){ rafId = null; return; }
+    stepPhysics();
+    draw();
+    rafId = requestAnimationFrame(loop);
+  }
+  function startLoop(){
+    if(rafId != null) return;
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches){ draw(); return; }
+    rafId = requestAnimationFrame(loop);
+  }
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) startLoop(); });
+
   function closedBezier(P){
     const n=P.length, g=i=>P[(i%n+n)%n];
     let d='M'+g(0)[0].toFixed(1)+','+g(0)[1].toFixed(1);
@@ -508,7 +576,7 @@
     if(pts.size>2) return;
     downPt={x:e.clientX,y:e.clientY}; moved=0;
     const n=pick(e.clientX,e.clientY);
-    if(n){ dragging=n; }
+    if(n){ dragging=n; reheat(0.8); }
     else { panning=true; canvas.classList.add('grabbing'); }
   });
   canvas.addEventListener('pointermove', e=>{
@@ -657,6 +725,7 @@
 
   resize();
   rebuild();
+  startLoop();
 })();
 </script>
 </body>
