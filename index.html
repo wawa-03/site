@@ -52,6 +52,13 @@
     .who p{font-size:13px;line-height:2;color:var(--secondary);margin:16px 0 0}
     section{margin-top:72px}
     section>h2{font-size:10px;font-weight:400;letter-spacing:.12em;color:var(--muted);margin:0 0 24px;text-align:center}
+    .archive-sec{margin-top:64px;text-align:center}
+    .archive-sec h2{margin:0}
+    .archive-sec a{
+      display:inline-block;font-size:13px;line-height:2;color:var(--secondary);text-decoration:none;
+      transform-origin:center;transition:color .15s,transform .15s;
+    }
+    .archive-sec a:hover,.archive-sec a:focus-visible{color:var(--hover-text);transform:scale(1.02)}
     .navbtn{
       border:0;background:none;color:var(--muted);font-size:15px;
       cursor:pointer;padding:5px 12px;border-radius:7px;
@@ -151,7 +158,8 @@
     #stage-prev{left:-8px}
     #stage-next{right:-8px}
     .stage-idx{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;font-variant-numeric:tabular-nums}
-    @media(hover:hover){.pcard:hover{transform:translateY(-3px);border-color:var(--muted)}}
+    @media(hover:hover){.pcard[href]:hover{transform:translateY(-3px);border-color:var(--muted)}}
+    .pcard-flat{cursor:default}
     /* —— 底部渐糊带 + 聊天悬浮按钮 + 聊天弹窗 —— */
     .page-fade{
       position:fixed;left:0;right:0;bottom:0;height:110px;z-index:12;pointer-events:none;
@@ -291,6 +299,10 @@
       </div>
     </section>
 
+
+    <section class="archive-sec" aria-labelledby="archive-title">
+      <h2 id="archive-title"><a href="about.html">完整档案　→</a></h2>
+    </section>
 
     <section class="notes-sec" id="contacts-section" aria-labelledby="contacts-title">
       <h2 id="contacts-title" class="sr-only">联系</h2>
@@ -589,7 +601,10 @@
 
     // —— 做过的事：横向轮播卡，点开进子页 ——
     (SITE.projects||[]).forEach(p=>{
-      const card=document.createElement('a');card.className='pcard';card.href='projects/'+p.slug+'.html';
+      const card=document.createElement(p.slug?'a':'div');
+      card.className='pcard';
+      if(p.slug)card.href='projects/'+p.slug+'.html';
+      else card.classList.add('pcard-flat');
       const k=document.createElement('span');k.className='k';k.textContent=p.k||'';
       const n=document.createElement('span');n.className='n';n.textContent=p.name;
       const t=document.createElement('span');t.className='t';t.textContent=(p.time||'')+(p.where?' · '+p.where:'');
