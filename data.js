@@ -102,7 +102,7 @@ window.SITE = {
     { date: "2026-03", importance: "record", text: "目前主要靠接 AI 工作流和营销文案的单子生活。", photo: "" },
     { date: "2026-07", importance: "record", text: "试了一段时间芯片终端销售，然后归档。", photo: "" },
     { date: "2026-08-05", importance: "major", stage: true, skipYear: true, text: "第一次认真好奇：别的国家，到底是什么样子？", photo: "" },
-    { date: "2026-08-06", importance: "record", text: "在小红书发出第一条内容：「怎么在海外获客啊？」阅读量 1。", photo: "" },
+    { date: "2026-09-28", importance: "important", stage: true, text: "开始日更视频。连续更新 21 天，一共发了 100 条。", photo: "" },
     { date: "2026-10-01", importance: "record", text: "这个网站上线了。", photo: "" }
   ]
 };
