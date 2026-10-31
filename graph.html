@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
   <meta name="theme-color" content="#f2f2ef">
-  <meta name="description" content="三禹的概念地图：能力、项目、概念、人，一张能点的图。">
+  <meta name="description" content="三禹的概念地图：一万一千条记录里长出来的一千八百个概念。">
   <title>三禹 · 概念地图</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='16'%20fill='%23f2f2ef'/%3E%3Cpath%20d='M39,14%20C28,16%2021,26%2022.5,36%20C24,46%2033,52.5%2043,51.5%20C38,48.5%2035,43%2035.2,36.5%20C35.4,29%2038.5,20.5%2043.5,15.5%20C42,14.8%2040.5,14.4%2039,14%20Z'%20fill='none'%20stroke='%231d1d1b'%20stroke-width='3'%20stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,8 +14,7 @@
     :root{
       color-scheme:light;
       --bg:#f2f2ef;--text:#121210;--secondary:#3b3b3b;--muted:#8a8a8a;
-      --ink:#1d1d1b;--line:rgba(29,29,27,.14);--line-on:rgba(29,29,27,.55);
-      --card:#fafaf8;--card-line:#d9d9d4;
+      --ink:#1d1d1b;--card:#fafaf8;--card-line:#d9d9d4;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -31,7 +30,6 @@
     #c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
     #c.grabbing{cursor:grabbing}
     #c.pointing{cursor:pointer}
-    /* —— 顶部 —— */
     .hud{
       position:fixed;top:0;left:50%;transform:translateX(-50%);
       width:min(520px,calc(100% - 44px));padding:26px 0 0;pointer-events:none;z-index:3;
@@ -42,285 +40,448 @@
     .back:hover,.back:focus-visible{color:var(--text);background:#e6e6e1}
     .sub{font-size:12px;line-height:1.9;color:var(--secondary);margin:10px 0 0}
     .sub .dim{color:var(--muted)}
-    /* —— 底部控件 —— */
     .controls{
       position:fixed;left:50%;transform:translateX(-50%);bottom:0;
-      width:min(520px,calc(100% - 44px));padding:0 0 18px;z-index:3;
-      display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;
+      width:min(560px,calc(100% - 44px));padding:0 0 16px;z-index:3;
+      display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;
     }
-    .chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:auto}
+    .chips{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;pointer-events:auto}
     .chip{
       border:1px solid transparent;background:none;color:var(--muted);font:inherit;font-size:11px;
-      padding:5px 11px;border-radius:99px;cursor:pointer;transition:color .15s,background .15s,border-color .15s;
+      padding:5px 10px;border-radius:99px;cursor:pointer;transition:color .15s,background .15s,border-color .15s;
     }
     .chip:hover{color:var(--text);background:#e6e6e1}
     .chip.on{color:var(--text);border-color:var(--card-line);background:var(--card)}
     .note{font-size:10px;line-height:1.8;color:var(--muted);text-align:center;margin:0;pointer-events:auto}
-    .note a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--card-line)}
-    .note a:hover{color:var(--text)}
-    /* —— 节点面板 —— */
+    .note a,.note button{color:var(--muted);text-decoration:none;border:0;background:none;font:inherit;cursor:pointer;padding:0;border-bottom:1px solid var(--card-line)}
+    .note a:hover,.note button:hover{color:var(--text)}
     #panel{
-      position:fixed;left:50%;transform:translateX(-50%);bottom:76px;
-      width:min(400px,calc(100% - 44px));z-index:4;
+      position:fixed;left:50%;transform:translateX(-50%);bottom:74px;
+      width:min(420px,calc(100% - 44px));z-index:4;
       background:var(--card);border:1px solid var(--card-line);border-radius:14px;
-      padding:16px 18px 15px;box-shadow:0 18px 50px rgba(0,0,0,.10);
+      padding:15px 17px 14px;box-shadow:0 18px 50px rgba(0,0,0,.10);
     }
     #panel[hidden]{display:none}
-    #panel .p-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .p-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
     #panel h2{font-size:15px;font-weight:500;margin:0;line-height:1.5}
     #panel .x{border:0;background:none;color:var(--muted);font-size:19px;line-height:1;cursor:pointer;padding:0 2px;margin-top:-2px}
     #panel .x:hover{color:var(--text)}
-    #panel .meta{font-size:10px;color:var(--muted);letter-spacing:.05em;margin:8px 0 0;font-variant-numeric:tabular-nums}
-    #panel p.body{font-size:13px;line-height:1.95;color:var(--secondary);margin:9px 0 0}
-    .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+    #panel .meta{font-size:10px;color:var(--muted);letter-spacing:.05em;margin:7px 0 0;font-variant-numeric:tabular-nums}
+    .rel{margin:11px 0 0;display:flex;flex-direction:column;gap:4px}
+    .rel button{
+      display:flex;gap:8px;align-items:baseline;width:100%;text-align:left;background:none;border:0;
+      font:inherit;font-size:12px;color:var(--secondary);cursor:pointer;padding:2px 0;line-height:1.6;
+    }
+    .rel button:hover{color:var(--text)}
+    .rel .t{font-size:10px;color:var(--muted);flex:0 0 40px}
+    .rel .v{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .rel .w{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+    .empty-rel{font-size:11px;color:var(--muted);margin:10px 0 0}
     @media(max-width:480px){
       .hud{padding-top:20px}
-      #panel{bottom:70px;padding:14px 15px}
+      #panel{bottom:70px;padding:13px 15px}
+      .chip{font-size:10px;padding:4px 8px}
     }
   </style>
 </head>
 <body>
-<canvas id="c" aria-label="概念地图，可拖动节点、滚轮缩放、点开看说明"></canvas>
+<canvas id="c" aria-label="概念地图，可拖动节点、滚轮或双指缩放、点开看关联"></canvas>
 
 <header class="hud">
   <div class="top">
     <h1>概念地图</h1>
     <a class="back" href="index.html" aria-label="回首页">←</a>
   </div>
-  <p class="sub">2021–2026，三千多条记录里反复出现的那些词。<br><span class="dim" id="counts"></span></p>
+  <p class="sub">一万一千多条记录，抽出一千八百个概念。<br><span class="dim" id="counts"></span></p>
 </header>
 
 <div class="controls">
-  <div class="chips" role="group" aria-label="按类型筛选">
-    <button class="chip on" data-k="all">全部</button>
-    <button class="chip on" data-k="skill">能力</button>
-    <button class="chip on" data-k="project">项目</button>
-    <button class="chip on" data-k="idea">概念</button>
-    <button class="chip on" data-k="person">人</button>
-  </div>
-  <p class="note">这是收敛过的一张。<a href="about.html">完整档案 →</a> · <a href="admin.html">编辑</a></p>
+  <div class="chips" id="kind-chips" role="group" aria-label="按类型筛选"></div>
+  <p class="note"><button type="button" id="dens">密度 ≥15</button> · <span id="stat"></span> · <a href="about.html">完整档案 →</a></p>
 </div>
 
 <section id="panel" hidden aria-live="polite">
   <div class="p-top"><h2 id="p-title"></h2><button class="x" id="p-close" aria-label="关闭">×</button></div>
   <p class="meta" id="p-meta"></p>
-  <p class="body" id="p-body"></p>
+  <div class="rel" id="p-rel"></div>
 </section>
 
 <script src="graph-data.js"></script>
 <script>
 'use strict';
 (function(){
-  const G = window.GRAPH || {nodes:[],links:[]};
-  const KIND = {skill:"能力", project:"项目", idea:"概念", person:"人"};
+  const G = window.GRAPH;
+  const KINDS = G.meta.kinds, TYPES = G.meta.types;
+  const RAW = G.nodes.map(([id,n,k,yr],i)=>({id, n, k, yr, i}));
+  const E = G.edges;
+
+  // 邻接表（全量一次建好）
+  const adj = RAW.map(()=>[]);
+  E.forEach(([a,b,t,w])=>{
+    adj[a].push({o:b, t, w});
+    adj[b].push({o:a, t, w});
+  });
+
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
   let W=0, H=0, dpr=1;
 
-  // —— 建图 ——
-  const nodes = G.nodes.map((d,i)=>{
-    const a = (i/G.nodes.length)*Math.PI*2;
-    const rad = 130 + Math.random()*70;
-    return {
-      id:d.id, k:d.k||'idea', n:d.n, yr:d.y, info:d.info||'',
-      x:Math.cos(a)*rad, y:Math.sin(a)*rad, vx:0, vy:0, deg:0
-    };
-  });
-  const byId = new Map(nodes.map(n=>[n.id,n]));
-  const links = [];
-  G.links.forEach(([a,b,t])=>{
-    const na=byId.get(a), nb=byId.get(b);
-    if(!na||!nb||na===nb) return;
-    links.push({a:na,b:nb,t:t||''});
-    na.deg++; nb.deg++;
-  });
-  nodes.forEach(n=>{ n.r = 3.4 + Math.sqrt(n.deg)*2.0 + (n.n? Math.min(2.4, Math.log10(n.n)*1.2) : 0); });
-
-  document.getElementById('counts').textContent =
-    nodes.length+' 个节点 · '+links.length+' 条连线 · 生成于 '+G.built;
-
-  // —— 视图 ——
-  let z=1, panX=0, panY=0;
-  let hover=null, selected=null, dragging=null, panning=false;
-  let downPt=null, moved=0;
+  let threshold = 15;
   const hiddenKinds = new Set();
+  let nodes = [];
+  let clusters = [];
+  let visEdges = [];
+  const indexOf = new Map();     // 原始下标 -> 可见节点
 
-  let ready=false;
+  let z=1, panX=0, panY=0;
+  let hover=null, selected=null, dragging=null, panning=false, downPt=null, moved=0, lit=null;
+
   function resize(){
     dpr = Math.min(2, window.devicePixelRatio||1);
     W = canvas.clientWidth; H = canvas.clientHeight;
     canvas.width = Math.round(W*dpr); canvas.height = Math.round(H*dpr);
-    // 版式比例跟着视口走：横屏压扁成椭圆，竖屏拉长填满高度
-    const nAY = Math.max(0.55, Math.min(1.8, Math.pow(H/W, 1.1)));
-    const changed = Math.abs(nAY - AY) > 0.03;
-    AY = nAY;
-    if(ready){
-      if(changed){ alpha=1; for(let i=0;i<320;i++) step(); alpha=0; }
-      fitView();
-    }
+    if(clusters.length){ layout(); fitView(); }
     draw();
   }
   window.addEventListener('resize', resize);
 
-  // —— 力导向 ——
-  // AY：宽屏时把纵向斥力压扁，让整张图自然长成横向的椭圆，而不是挤在中间一个球
-  let alpha = 1, AY = 1;
-  function step(){
-    alpha *= .992;
-    const cx=0, cy=0;
-    // 斥力
-    for(let i=0;i<nodes.length;i++){
-      const a=nodes[i];
-      for(let j=i+1;j<nodes.length;j++){
-        const b=nodes[j];
-        let dx=b.x-a.x, dy=(b.y-a.y);
-        let d2=dx*dx+dy*dy;
-        if(d2<1) { dx=Math.random()-.5; dy=Math.random()-.5; d2=1; }
-        const d=Math.sqrt(d2);
-        const f = 2600/d2;
-        const ux=dx/d, uy=dy/d;
-        a.vx-=ux*f; a.vy-=uy*f*AY;
-        b.vx+=ux*f; b.vy+=uy*f*AY;
-        // 轻微碰撞
-        const minD = a.r+b.r+9;
-        if(d < minD){
-          const push=(minD-d)/d*0.5;
-          a.vx-=ux*push; a.vy-=uy*push;
-          b.vx+=ux*push; b.vy+=uy*push;
-        }
+  // ———————————— 布局：盘半径跟节点数走 / 盘内向日葵 / 椭圆排布 ————————————
+  function layout(){
+    // 按「扣掉标题和控件后的可用区域」决定排布的长宽比，而不是整个窗口
+    const availW = Math.max(200, W-52), availH = Math.max(200, H-218);
+    const aspect = Math.max(0.75, Math.min(2.2, availW/availH));
+
+    clusters = KINDS.map((k,ki)=>{
+      const list = nodes.filter(n=>n.k===ki);
+      if(!list.length) return null;
+      const R = 6.0*Math.sqrt(list.length) + 18;
+      return {k:ki, nodes:list, R, cx:0, cy:0, env:null};
+    }).filter(Boolean);
+    clusters.sort((a,b)=> b.nodes.length - a.nodes.length);
+
+    const m = clusters.length;
+    if(m === 1){
+      clusters[0].cx = 0; clusters[0].cy = 0;
+    }else{
+      // 按可用区域长宽比选列数；行高按该行最大盘半径单独算，竖排不留空
+      const maxR = Math.max(...clusters.map(c=>c.R));
+      let best=null;
+      for(let c1=1;c1<=m;c1++){
+        const r1=Math.ceil(m/c1);
+        const err=Math.abs((c1)/(r1) - aspect);
+        if(!best || err<best.err) best={c1,r1,err};
+      }
+      const cols=best.c1, rows=best.r1;
+      const cw = maxR*2.82;
+      const rowList=[];
+      for(let r=0;r<rows;r++) rowList.push(clusters.slice(r*cols,(r+1)*cols));
+      const rowH = rowList.map(rw=> Math.max(...rw.map(c=>c.R))*2.74);
+      const totalH = rowH.reduce((a,b)=>a+b,0);
+      let y = -totalH/2;
+      rowList.forEach((rw,ri)=>{
+        const cy = y + rowH[ri]/2;
+        const inRow = rw.length;
+        rw.forEach((c,ci2)=>{
+          const j = mulberry(97 + (ri*10+ci2)*31);
+          c.cx = (ci2-(inRow-1)/2)*cw + (j()-.5)*cw*0.08;
+          c.cy = cy + (j()-.5)*rowH[ri]*0.06;
+        });
+        y += rowH[ri];
+      });
+    }
+
+    clusters.forEach((c,ci)=>{
+      c.nodes.sort((a,b)=> a.n - b.n);   // 小的在中心，大的靠外：标签就不会堆在圆心
+      const n=c.nodes.length, GA=2.399963229728653;
+      // 大小交错着放：最大的在中心，第二大的甩到最外圈，避免中心糊成一个黑核
+      const rnd = mulberry(1013 + ci*977);
+      c.rot = (ci*1.7);
+      c.elong = 1 + 0.10*Math.sin(ci*2.3);
+      c.nodes.forEach((nd,i)=>{
+        // 半径按 √i 铺开，再乘一个固定的随机扰动 —— 外缘就不齐，包络才不是正圆
+        const wob = 0.88 + 0.30*rnd();
+        const rr = c.R * Math.sqrt((i+0.6)/n) * wob;
+        const a = i*GA + c.rot;
+        nd.x = c.cx + Math.cos(a)*rr*c.elong;
+        nd.y = c.cy + Math.sin(a)*rr;
+        nd.c = c;
+      });
+      // 每个簇只挑最大的那个当「锚点」上名字：它落在最外圈（点最稀的地方），
+      // 默认视图只读这七个名字，剩下的等悬停或放大再出现。
+      c.anchors = new Set(c.nodes.slice(-1));
+    });
+  }
+
+  // 确定性随机（同一个簇每次刷新形状一样）
+  function mulberry(a){
+    return function(){
+      a|=0; a=a+0x6D2B79F5|0;
+      let t=Math.imul(a^a>>>15, 1|a);
+      t=t+Math.imul(t^t>>>7, 61|t)^t;
+      return ((t^t>>>14)>>>0)/4294967296;
+    };
+  }
+
+  function fitView(){
+    let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+    clusters.forEach(c=>{
+      x0=Math.min(x0, c.cx-c.R*1.28-24); x1=Math.max(x1, c.cx+c.R*1.28+24);
+      y0=Math.min(y0, c.cy-c.R*1.28-24); y1=Math.max(y1, c.cy+c.R*1.28+24);
+    });
+    if(x0>x1){ x0=-100;y0=-100;x1=100;y1=100; }
+    // 避开顶部的标题和底部的控件
+    const padT = 122, padB = 96, padX = 26;
+    const availW = Math.max(120, W - padX*2);
+    const availH = Math.max(120, H - padT - padB);
+    const bw=Math.max(1,x1-x0), bh=Math.max(1,y1-y0);
+    z = Math.max(.3, Math.min(2.2, Math.min(availW/bw, availH/bh)));
+    panX = -((x0+x1)/2)*z;
+    panY = (padT-padB)/2 - ((y0+y1)/2)*z;
+  }
+
+  // ———————————— 包络曲线 ————————————
+  // 72 个方向取极坐标最大值 → 只涨不落地补洞（6 轮）→ 平滑（3 轮）→ 贝塞尔闭合
+  const DIRS = 72;
+  function envelopeFor(c){
+    const pts = c.nodes;
+    if(!pts.length) return null;
+    let cx=0, cy=0;
+    pts.forEach(p=>{ cx+=p.x; cy+=p.y; });
+    cx/=pts.length; cy/=pts.length;
+    const M = new Array(DIRS).fill(0);
+    pts.forEach(p=>{
+      const dx=p.x-cx, dy=p.y-cy;
+      let a=Math.atan2(dy,dx); if(a<0) a+=Math.PI*2;
+      const d=Math.hypot(dx,dy) + p.r + 14;
+      const i=Math.floor(a/(Math.PI*2)*DIRS)%DIRS;
+      if(d>M[i]) M[i]=d;
+    });
+    // 稀疏簇只有十来个点，直接取极值会长出星形尖刺。
+    // 先做几轮「取邻域最大」把尖刺之间的凹谷垫起来（越稀垫得越狠），再补洞、再平滑。
+    const rounds = pts.length<30 ? 4 : (pts.length<70 ? 2 : 1);
+    for(let k=0;k<rounds;k++){
+      const nr=M.slice();
+      for(let i=0;i<DIRS;i++){
+        nr[i]=Math.max(M[i], M[(i-1+DIRS)%DIRS], M[(i+1)%DIRS]);
+      }
+      for(let i=0;i<DIRS;i++) M[i]=nr[i];
+    }
+    for(let k=0;k<6;k++){
+      for(let i=0;i<DIRS;i++){
+        const avg=(M[(i-1+DIRS)%DIRS]+M[(i+1)%DIRS])/2;
+        if(M[i]<avg) M[i]=avg;
       }
     }
-    // 连线
-    links.forEach(l=>{
-      const dx=l.b.x-l.a.x, dy=l.b.y-l.a.y;
-      const d=Math.hypot(dx,dy)||1;
-      const L=86 + (l.a.r+l.b.r)*2.2;
-      const f=(d-L)*0.010;
-      const ux=dx/d, uy=dy/d;
-      l.a.vx+=ux*f; l.a.vy+=uy*f;
-      l.b.vx-=ux*f; l.b.vy-=uy*f;
+    for(let k=0;k<3;k++){
+      const nr=M.slice();
+      for(let i=0;i<DIRS;i++) nr[i]=(M[(i-1+DIRS)%DIRS]+2*M[i]+M[(i+1)%DIRS])/4;
+      for(let i=0;i<DIRS;i++) M[i]=nr[i];
+    }
+    const P=[];
+    for(let i=0;i<DIRS;i++){
+      const a=i/DIRS*Math.PI*2;
+      P.push([cx+Math.cos(a)*M[i], cy+Math.sin(a)*M[i]]);
+    }
+    let top=1e9;
+    for(let i=0;i<DIRS;i++) if(P[i][1]<top) top=P[i][1];
+    return {cx, cy, top, path:closedBezier(P)};
+  }
+  function closedBezier(P){
+    const n=P.length, g=i=>P[(i%n+n)%n];
+    let d='M'+g(0)[0].toFixed(1)+','+g(0)[1].toFixed(1);
+    for(let i=0;i<n;i++){
+      const a=g(i-1), b=g(i), c=g(i+1), e=g(i+2);
+      d+='C'+(b[0]+(c[0]-a[0])/6).toFixed(1)+','+(b[1]+(c[1]-a[1])/6).toFixed(1)
+        +' '+(c[0]-(e[0]-b[0])/6).toFixed(1)+','+(c[1]-(e[1]-b[1])/6).toFixed(1)
+        +' '+c[0].toFixed(1)+','+c[1].toFixed(1);
+    }
+    return d+'Z';
+  }
+
+  // ———————————— 重建可见集 ————————————
+  function rebuild(){
+    const visible = new Set();
+    RAW.forEach(r=>{
+      if(r.n < threshold) return;
+      if(hiddenKinds.has(r.k)) return;
+      visible.add(r.i);
     });
-    // 向心 + 软边界（防止个别节点被甩出主群） + 阻尼
-    const R = 300;
+    nodes = RAW.filter(r=>visible.has(r.i));
+    indexOf.clear();
     nodes.forEach(n=>{
-      n.vx += (cx-n.x)*0.0045;
-      n.vy += (cy-n.y)*0.0045;
-      const rr = Math.hypot(n.x,n.y) || 1;
-      if(rr > R){
-        const over=(rr-R)*0.05;
-        n.vx -= (n.x/rr)*over; n.vy -= (n.y/rr)*over*AY;
-      }
-      if(n===dragging){ n.vx=0; n.vy=0; return; }
-      n.vx*=0.86; n.vy*=0.86;
-      n.x+=n.vx; n.y+=n.vy;
+      n.r = 1.8 + Math.sqrt(n.n)*0.34;
+      indexOf.set(n.i, n);
     });
-    return alpha > .004;
-  }
-
-  let raf=null;
-  function loop(){
-    raf=null;
-    const alive = step();
+    visEdges = [];
+    E.forEach(([a,b,t,w])=>{
+      if(!visible.has(a) || !visible.has(b)) return;
+      visEdges.push({a:indexOf.get(a), b:indexOf.get(b), t, w});
+    });
+    layout();
+    fitView();
+    buildKindChips();
+    updateStat();
+    lit = null;
+    if(selected && !indexOf.has(selected.i)) closePanel();
     draw();
-    if(alive) raf=requestAnimationFrame(loop);
   }
-  function kick(a){ alpha=Math.max(alpha,a); if(!raf) raf=requestAnimationFrame(loop); }
 
-  // —— 绘制 ——
-  function neighbors(n){
-    const s=new Set([n]);
-    links.forEach(l=>{ if(l.a===n) s.add(l.b); if(l.b===n) s.add(l.a); });
-    return s;
+  function updateStat(){
+    document.getElementById('stat').textContent = nodes.length+' 个概念 · '+visEdges.length+' 条关系';
+    document.getElementById('counts').textContent =
+      '收录 '+G.meta.node_count+' 个概念 / '+G.meta.edge_count+' 条关系 · 出现 ≥5 次才进来 · 已去掉人名与原话';
+    document.getElementById('dens').textContent = '密度 ≥'+threshold;
   }
-  let lit=null; // 当前高亮集合
-  function computeLit(){
-    if(selected) lit = neighbors(selected);
-    else if(hover) lit = neighbors(hover);
-    else lit = null;
+
+  // ———————————— 绘制 ————————————
+  let labelSet = new Set();
+  function setLabelSet(n){
+    labelSet = new Set();
+    if(!n) return;
+    labelSet.add(n);
+    adj[n.i].slice().sort((a,b)=> b.w-a.w).slice(0,6).forEach(r=>{
+      const t=indexOf.get(r.o); if(t) labelSet.add(t);
+    });
+  }
+  function neighborsOf(n){
+    const s=new Set([n]);
+    for(const e of visEdges){
+      if(e.a===n) s.add(e.b);
+      else if(e.b===n) s.add(e.a);
+    }
+    return s;
   }
 
   function draw(){
     ctx.setTransform(dpr,0,0,dpr,0,0);
     ctx.clearRect(0,0,W,H);
-    computeLit();
     const ox = W/2 + panX, oy = H/2 + panY;
     ctx.setTransform(dpr*z,0,0,dpr*z, dpr*ox, dpr*oy);
+    lit = (selected||hover) ? neighborsOf(selected||hover) : null;
+    setLabelSet(selected||hover);
 
-    // 连线
-    links.forEach(l=>{
-      const on = lit ? (lit.has(l.a)&&lit.has(l.b)) : false;
-      const vis = !hiddenKinds.has(l.a.k) && !hiddenKinds.has(l.b.k);
-      if(!vis) return;
-      ctx.beginPath();
-      ctx.moveTo(l.a.x,l.a.y); ctx.lineTo(l.b.x,l.b.y);
-      ctx.lineWidth = (on?1.5:1)/z;
-      ctx.strokeStyle = on ? 'rgba(29,29,27,.5)' : 'rgba(29,29,27,.11)';
-      ctx.stroke();
+    // 包络底
+    clusters.forEach(c=>{
+      const env = envelopeFor(c);
+      c.env = env;
+      if(!env) return;
+      const path = new Path2D(env.path);
+      ctx.fillStyle='rgba(29,29,27,.03)';
+      ctx.fill(path);
+      ctx.lineWidth = 1.2/z;
+      ctx.strokeStyle='rgba(29,29,27,.25)';
+      ctx.stroke(path);
     });
+
+    // 关系：默认只画簇内的线（跨簇的等点选才亮），不然整张布满了长线
+    // 选中时也只亮「最重的十来条」——AI 这种点有三十多条关系，全亮就是一屏扇面
+    const focus = selected || hover;
+    let focusEdges = null;
+    if(focus){
+      const mine = [];
+      for(const e of visEdges){ if(e.a===focus||e.b===focus) mine.push(e); }
+      mine.sort((x,y)=> y.w-x.w);
+      focusEdges = new Set(mine.slice(0, focus===selected?12:7));
+    }
+    const baseA = focus ? .055 : .09;
+    for(const e of visEdges){
+      const intra = e.a.c === e.b.c;
+      const touches = focusEdges ? focusEdges.has(e) : false;
+      if(focus){
+        // 选中时只留「这个点的十来条重线」+ 底噪，邻点之间的连线一律不画
+        if(!touches && !intra) continue;
+      }else if(!intra) continue;
+      ctx.beginPath();
+      ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y);
+      ctx.lineWidth = (touches?1.15:0.85)/z;
+      ctx.strokeStyle = touches ? 'rgba(29,29,27,.34)' : 'rgba(29,29,27,'+baseA+')';
+      ctx.stroke();
+    }
 
     // 节点
     nodes.forEach(n=>{
-      if(hiddenKinds.has(n.k)) return;
       const dim = lit && !lit.has(n);
       const isSel = n===selected, isHov = n===hover;
-      const ink = dim ? 'rgba(29,29,27,.15)' : (n.k==='idea' ? '#6e6e6e' : '#1d1d1b');
-      const r = n.r * (isSel?1.18:(isHov?1.1:1));
+      const r = n.r * (isSel?1.28:(isHov?1.16:1));
       ctx.beginPath();
-      if(n.k==='project'){
-        const s=r*1.72;
-        roundRect(ctx, n.x-s/2, n.y-s/2, s, s, 3.2);
-      }else{
-        ctx.arc(n.x,n.y,r,0,Math.PI*2);
-      }
-      if(n.k==='person'){
-        ctx.fillStyle='#f2f2ef'; ctx.fill();
-        ctx.lineWidth=1.5/z; ctx.strokeStyle=ink; ctx.stroke();
-        ctx.beginPath(); ctx.arc(n.x,n.y,Math.max(1.2,r*0.34),0,Math.PI*2);
-        ctx.fillStyle=ink; ctx.fill();
-      }else{
-        ctx.fillStyle=ink; ctx.fill();
-      }
+      ctx.arc(n.x, n.y, r, 0, Math.PI*2);
+      ctx.fillStyle = dim ? 'rgba(29,29,27,.14)' : (n.n>=150 ? '#1d1d1b' : '#6e6e6e');
+      ctx.fill();
       if(isSel||isHov){
-        ctx.beginPath(); ctx.arc(n.x,n.y,r+5/z*1,0,Math.PI*2);
-        ctx.lineWidth=1/z; ctx.strokeStyle='rgba(29,29,27,.25)'; ctx.stroke();
+        ctx.beginPath(); ctx.arc(n.x,n.y,r+4/z,0,Math.PI*2);
+        ctx.lineWidth=1/z; ctx.strokeStyle='rgba(29,29,27,.3)'; ctx.stroke();
       }
     });
 
-    // 标签：屏幕坐标下画，按连接度排序 + 简单避让，避免中间一团字叠在一起
+    // 簇名：压在包络上边缘，描一圈纸色让它从点里脱出来
+    // 窄屏上排得紧，名字放到包络内侧，免得落进上一行的盘里
+    const nameInside = W < 620;
+    const placed=[];
+    clusters.forEach(c=>{
+      if(!c.env) return;
+      const fs=10/z;
+      ctx.font='400 '+fs+'px "Inter","PingFang SC",sans-serif';
+      ctx.textAlign='center';
+      ctx.textBaseline = nameInside ? 'top' : 'alphabetic';
+      const ny = nameInside ? c.env.top + 4/z : c.env.top - 8/z;
+      ctx.lineWidth=3.2/z; ctx.strokeStyle='#f2f2ef';
+      ctx.strokeText(KINDS[c.k], c.env.cx, ny);
+      ctx.fillStyle='rgba(29,29,27,.45)';
+      ctx.fillText(KINDS[c.k], c.env.cx, ny);
+      // 簇名也占位：节点标签不许压到它上面
+      const nw=ctx.measureText(KINDS[c.k]).width*z;
+      const nx=c.env.cx*z + W/2 + panX;
+      const nyS=ny*z + H/2 + panY;
+      placed.push({x:nx-nw/2-4, y:(nameInside?nyS:nyS-12)-1, w:nw+8, h:13});
+    });
+
+    // 标签：屏幕坐标画 + 避让
     const ox2 = W/2 + panX, oy2 = H/2 + panY;
     ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.font = '400 10px "Inter","PingFang SC",sans-serif';
+    ctx.font='400 10px "Inter","PingFang SC",sans-serif';
     ctx.textAlign='center'; ctx.textBaseline='top';
-    const placed=[];
-    const order = nodes.filter(n=>!hiddenKinds.has(n.k)).sort((a,b)=>{
-      const pa=(a===selected||a===hover)?1e6:(lit&&lit.has(a)?1e5:0)+a.deg;
-      const pb=(b===selected||b===hover)?1e6:(lit&&lit.has(b)?1e5:0)+b.deg;
+    const order = nodes.slice().sort((a,b)=>{
+      const pa=(a===selected||a===hover)?1e9:(lit&&lit.has(a)?1e8:0)+a.n;
+      const pb=(b===selected||b===hover)?1e9:(lit&&lit.has(b)?1e8:0)+b.n;
       return pb-pa;
     });
     order.forEach(n=>{
-      const show = n.deg>=3 || (lit&&lit.has(n)) || z>1.35;
+      const show = n===selected || labelSet.has(n)
+        || (!focus && n.c.anchors.has(n)) || z>1.9;
       if(!show) return;
-      const sx = n.x*z + ox2, sy = n.y*z + oy2 + n.r*z + 4;
-      const w = ctx.measureText(n.id).width, h = 12;
-      const box = {x:sx-w/2-2, y:sy-1, w:w+4, h:h};
-      const clash = placed.some(p=> !(box.x+box.w < p.x || p.x+p.w < box.x || box.y+box.h < p.y || p.y+p.h < box.y));
+      // 标签往簇内放：点在上半部就标在下方，在下半部就标在上方，别顶出包络
+      const isAnchor = n.c.anchors.has(n) && n!==selected;
+      let sx = n.x*z + ox2, sy = n.y*z + oy2, base, halo = 3;
+      if(isAnchor){
+        // 锚点往簇外推：它本来就在最外圈，外侧最空，字才读得出来
+        const dx2=n.x-n.c.cx, dy2=n.y-n.c.cy, dl=Math.hypot(dx2,dy2)||1, off=n.r*z+9;
+        sx += dx2/dl*off*0.5;
+        sy += dy2/dl*off;
+        base = dy2>0 ? 'top' : 'bottom';
+        halo = 3.6;
+      }else{
+        const up = n.y > n.c.cy;
+        sy += up ? -(n.r*z+4) : (n.r*z+4);
+        base = up ? 'bottom' : 'top';
+      }
+      ctx.textBaseline = base;
+      const w = ctx.measureText(n.id).width;
+      const box = {x:sx-w/2-3, y:sy-1, w:w+6, h:12};
+      const clash = placed.some(p=> !(box.x+box.w<p.x || p.x+p.w<box.x || box.y+box.h<p.y || p.y+p.h<box.y));
       if(clash) return;
       placed.push(box);
       const dim = lit && !lit.has(n);
-      ctx.fillStyle = dim ? 'rgba(29,29,27,.22)' : (n===selected?'#121210':'#6e6e6e');
+      if(!dim){
+        ctx.lineWidth = halo;
+        ctx.strokeStyle = '#f2f2ef';
+        ctx.strokeText(n.id, sx, sy);
+      }
+      ctx.fillStyle = dim ? 'rgba(29,29,27,.2)' : (n===selected?'#121210':(isAnchor?'#4a4a4a':'#6e6e6e'));
       ctx.fillText(n.id, sx, sy);
     });
   }
-  function roundRect(c,x,y,w,h,r){
-    c.moveTo(x+r,y);
-    c.arcTo(x+w,y,x+w,y+h,r);
-    c.arcTo(x+w,y+h,x,y+h,r);
-    c.arcTo(x,y+h,x,y,r);
-    c.arcTo(x,y,x+w,y,r);
-    c.closePath();
-  }
 
-  // —— 命中 ——
+  // ———————————— 坐标与命中 ————————————
   function toWorld(sx,sy){
     return { x:(sx - W/2 - panX)/z, y:(sy - H/2 - panY)/z };
   }
@@ -328,42 +489,41 @@
     const p=toWorld(sx,sy);
     let best=null, bd=1e9;
     nodes.forEach(n=>{
-      if(hiddenKinds.has(n.k)) return;
       const d=Math.hypot(p.x-n.x, p.y-n.y);
-      const hit = Math.max(n.r+7/z, 12/z);
+      const hit=Math.max(n.r+6/z, 11/z);
       if(d<hit && d<bd){ bd=d; best=n; }
     });
     return best;
   }
 
-  // —— 交互 ——
-  const pts = new Map();
-  let pinch = null;
+  // ———————————— 交互 ————————————
+  const pts=new Map();
+  let pinch=null;
   canvas.addEventListener('pointerdown', e=>{
     canvas.setPointerCapture(e.pointerId);
-    pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
-    if(pts.size === 2){
-      // 双指：进入捏合，取消单指状态
-      const [a,b] = [...pts.values()];
+    pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pts.size===2){
+      const [a,b]=[...pts.values()];
       const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
-      pinch = { d: Math.hypot(a.x-b.x, a.y-b.y)||1, z: z, wx: toWorld(mx,my).x, wy: toWorld(mx,my).y };
+      const w=toWorld(mx,my);
+      pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1, z:z, wx:w.x, wy:w.y};
       dragging=null; panning=false; downPt=null; moved=99;
       canvas.classList.remove('grabbing');
       return;
     }
-    if(pts.size > 2) return;
+    if(pts.size>2) return;
     downPt={x:e.clientX,y:e.clientY}; moved=0;
     const n=pick(e.clientX,e.clientY);
-    if(n){ dragging=n; alpha=Math.max(alpha,.35); }
+    if(n){ dragging=n; }
     else { panning=true; canvas.classList.add('grabbing'); }
   });
   canvas.addEventListener('pointermove', e=>{
-    if(pts.has(e.pointerId)) pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    if(pts.has(e.pointerId)) pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(pinch && pts.size>=2){
-      const [a,b] = [...pts.values()];
-      const d = Math.hypot(a.x-b.x, a.y-b.y)||1;
+      const [a,b]=[...pts.values()];
+      const d=Math.hypot(a.x-b.x,a.y-b.y)||1;
       const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
-      z = Math.max(.45, Math.min(2.6, pinch.z * (d/pinch.d)));
+      z=Math.max(.35, Math.min(3, pinch.z*(d/pinch.d)));
       panX = mx - W/2 - pinch.wx*z;
       panY = my - H/2 - pinch.wy*z;
       draw(); return;
@@ -372,8 +532,7 @@
     if(dragging){
       const p=toWorld(e.clientX,e.clientY);
       dragging.x=p.x; dragging.y=p.y;
-      dragging.vx=dragging.vy=0;
-      kick(.5); return;
+      draw(); return;
     }
     if(panning){
       panX += e.movementX||0; panY += e.movementY||0;
@@ -387,7 +546,7 @@
   });
   function endPointer(e){
     pts.delete(e.pointerId);
-    if(pts.size < 2) pinch = null;
+    if(pts.size<2) pinch=null;
     canvas.classList.remove('grabbing');
     if(dragging && moved<5) select(dragging);
     if(!dragging && panning && moved<5) closePanel();
@@ -400,24 +559,51 @@
   canvas.addEventListener('wheel', e=>{
     e.preventDefault();
     const before=toWorld(e.clientX,e.clientY);
-    z = Math.max(.45, Math.min(2.6, z * (e.deltaY>0? .9 : 1.1)));
+    z=Math.max(.35, Math.min(3, z*(e.deltaY>0?.9:1.1)));
     panX = e.clientX - W/2 - before.x*z;
     panY = e.clientY - H/2 - before.y*z;
     draw();
   }, {passive:false});
 
-  // —— 面板 ——
+  // ———————————— 面板 ————————————
   const panel=document.getElementById('panel');
   function select(n){
     selected=n; draw();
-    document.getElementById('p-title').textContent=n.id;
-    const bits=[KIND[n.k]||'概念'];
-    if(n.n) bits.push('出现 '+n.n+' 次');
+    document.getElementById('p-title').textContent = n.id;
+    const bits=[KINDS[n.k], '出现 '+n.n+' 次'];
     if(n.yr) bits.push(n.yr);
-    bits.push('连出去 '+n.deg+' 条');
-    document.getElementById('p-meta').textContent=bits.join(' · ');
-    document.getElementById('p-body').textContent=n.info;
+    document.getElementById('p-meta').textContent = bits.join(' · ');
+
+    const rel=document.getElementById('p-rel');
+    rel.replaceChildren();
+    const list = adj[n.i].slice()
+      .filter(r=>indexOf.has(r.o))
+      .sort((a,b)=> b.w-a.w)
+      .slice(0,6);
+    if(!list.length){
+      const p=document.createElement('p');
+      p.className='empty-rel';
+      p.textContent='这个密度下没有可见的关系。';
+      rel.append(p);
+    }
+    list.forEach(r=>{
+      const btn=document.createElement('button');
+      btn.type='button';
+      const t=document.createElement('span'); t.className='t'; t.textContent=TYPES[r.t]||'';
+      const v=document.createElement('span'); v.className='v'; v.textContent=RAW[r.o].id;
+      const w=document.createElement('span'); w.className='w'; w.textContent='×'+r.w;
+      btn.append(t,v,w);
+      btn.onclick=()=>{ const target=indexOf.get(r.o); if(target) focusOn(target); };
+      rel.append(btn);
+    });
     panel.hidden=false;
+  }
+  function focusOn(n){
+    select(n);
+    z=Math.max(z,1.1);
+    panX = W/2 - n.x*z;
+    panY = H/2 - n.y*z;
+    draw();
   }
   function closePanel(){
     selected=null; panel.hidden=true; draw();
@@ -425,47 +611,58 @@
   document.getElementById('p-close').onclick=closePanel;
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePanel(); });
 
-  // —— 筛选 ——
-  const KINDS=['skill','project','idea','person'];
-  const allChip=document.querySelector('.chip[data-k="all"]');
-  function syncAll(){
-    allChip.classList.toggle('on', KINDS.every(k=>!hiddenKinds.has(k)));
+  // ———————————— 控件 ————————————
+  const chipsBox = document.getElementById('kind-chips');
+  function buildKindChips(){
+    if(!chipsBox.childElementCount){
+      const all=document.createElement('button');
+      all.className='chip'; all.dataset.k='all'; all.textContent='全部';
+      chipsBox.append(all);
+      KINDS.forEach((name,ki)=>{
+        if(!RAW.some(r=>r.k===ki && r.n>=threshold)) return;
+        const b=document.createElement('button');
+        b.className='chip'; b.dataset.k=ki; b.textContent=name;
+        chipsBox.append(b);
+      });
+      chipsBox.querySelectorAll('.chip').forEach(ch=>{
+        ch.onclick=()=>{
+          const k=ch.dataset.k;
+          if(k==='all'){
+            hiddenKinds.clear();
+            chipsBox.querySelectorAll('.chip').forEach(c=>c.classList.add('on'));
+          }else{
+            const ki=+k;
+            if(hiddenKinds.has(ki)) hiddenKinds.delete(ki); else hiddenKinds.add(ki);
+            ch.classList.toggle('on', !hiddenKinds.has(ki));
+          }
+          syncKindChips();
+          rebuild();
+        };
+      });
+    }
+    chipsBox.querySelectorAll('.chip[data-k]').forEach(c=>{
+      if(c.dataset.k==='all') return;
+      c.classList.toggle('on', !hiddenKinds.has(+c.dataset.k));
+    });
+    syncKindChips();
   }
-  document.querySelectorAll('.chip').forEach(ch=>{
-    ch.onclick=()=>{
-      const k=ch.dataset.k;
-      if(k==='all'){
-        hiddenKinds.clear();
-        document.querySelectorAll('.chip[data-k]').forEach(c=>c.classList.add('on'));
-      }else{
-        if(hiddenKinds.has(k)) hiddenKinds.delete(k); else hiddenKinds.add(k);
-        ch.classList.toggle('on', !hiddenKinds.has(k));
-      }
-      syncAll();
-      if(selected && hiddenKinds.has(selected.k)) closePanel();
-      draw();
-    };
-  });
+  function syncKindChips(){
+    const all=chipsBox.querySelector('.chip[data-k="all"]');
+    if(!all) return;
+    const ok=[...chipsBox.querySelectorAll('.chip[data-k]')]
+      .filter(c=>c.dataset.k!=='all')
+      .every(c=>c.classList.contains('on'));
+    all.classList.toggle('on', ok);
+  }
+  document.getElementById('dens').onclick=()=>{
+    const steps=[8,15,30,50,100];
+    threshold = steps[(steps.indexOf(threshold)+1)%steps.length];
+    chipsBox.replaceChildren();   // 让类型按钮按新阈值重建
+    rebuild();
+  };
 
   resize();
-  // 先跑稳再画：避免页面加载后图还在飘，也让首帧的取景就是最终取景
-  for(let i=0;i<420;i++) step();
-  alpha = 0;
-  fitView();
-  ready = true;
-  draw();
-
-  function fitView(){
-    let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
-    nodes.forEach(n=>{
-      x0=Math.min(x0,n.x-n.r-26); x1=Math.max(x1,n.x+n.r+26);
-      y0=Math.min(y0,n.y-n.r-20); y1=Math.max(y1,n.y+n.r+20);
-    });
-    const bw=Math.max(1,x1-x0), bh=Math.max(1,y1-y0);
-    z = Math.max(.45, Math.min(1.7, Math.min(W*0.92/bw, H*0.76/bh)));
-    panX = -((x0+x1)/2)*z;
-    panY = -((y0+y1)/2)*z + H*0.02;
-  }
+  rebuild();
 })();
 </script>
 </body>
