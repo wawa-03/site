@@ -94,14 +94,14 @@ window.SITE = {
     { date: "2024-02", importance: "important", stage: true, text: "和一个客户把合作定成长期，一直做到 2026 年 3 月。", photo: "" },
     { date: "2024-09", importance: "record", text: "对外说法定下来：00 后玩 AI，探索一人企业。", photo: "" },
     { date: "2025-02", importance: "important", text: "定价成型：基础提示词 3000–5000，定制 8000–15000。", photo: "" },
-    { date: "2026-03-10", importance: "important", stage: true, text: "两年的长期合作结束。", photo: "" },
+    { date: "2026-03-10", importance: "important", stage: true, skipYear: true, text: "两年的长期合作结束。", photo: "" },
     { date: "2026-06", importance: "important", stage: true, text: "需求提取系统交付：903 个表格变成一个双击就能用的 Mac 应用。", photo: "" },
-    { date: "2026-07", importance: "important", stage: true, text: "内容选题系统跑通：351 条人群需求撞上 65 项服务，筛出 43 个选题公式。", photo: "" },
+    { date: "2026-07", importance: "important", stage: true, skipYear: true, text: "内容选题系统上线：351 条人群需求撞上 65 项服务，筛出 43 个选题公式。", photo: "" },
     { date: "2025-06", importance: "important", text: "开始做自己的 AI 营销数据系统：从社交平台采集评论，分析、分类，产出结构化需求清单。", photo: "" },
     { date: "2026-02-18", importance: "record", text: "写给临终前的自己：我受不了自己散漫的样子。这种不满意，也是推着我行动的一股力。", photo: "" },
     { date: "2026-03", importance: "record", text: "目前主要靠接 AI 工作流和营销文案的单子生活。", photo: "" },
     { date: "2026-07", importance: "record", text: "试了一段时间芯片终端销售，然后归档。", photo: "" },
-    { date: "2026-08-05", importance: "major", stage: true, text: "第一次认真好奇：别的国家，到底是什么样子？", photo: "" },
+    { date: "2026-08-05", importance: "major", stage: true, skipYear: true, text: "第一次认真好奇：别的国家，到底是什么样子？", photo: "" },
     { date: "2026-08-06", importance: "record", text: "在小红书发出第一条内容：「怎么在海外获客啊？」阅读量 1。", photo: "" },
     { date: "2026-10-01", importance: "record", text: "这个网站上线了。", photo: "" }
   ]
