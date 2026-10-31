@@ -517,7 +517,7 @@
       const [a,b]=[...pts.values()];
       const d=Math.hypot(a.x-b.x,a.y-b.y)||1;
       const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
-      z=Math.max(.35, Math.min(3, pinch.z*(d/pinch.d)));
+      z=Math.max(.35, Math.min(8, pinch.z*(d/pinch.d)));
       panX = mx - W/2 - pinch.wx*z;
       panY = my - H/2 - pinch.wy*z;
       draw(); return;
@@ -553,7 +553,7 @@
   canvas.addEventListener('wheel', e=>{
     e.preventDefault();
     const before=toWorld(e.clientX,e.clientY);
-    z=Math.max(.35, Math.min(3, z*(e.deltaY>0?.9:1.1)));
+    z=Math.max(.35, Math.min(8, z*(e.deltaY>0?.9:1.1)));
     panX = e.clientX - W/2 - before.x*z;
     panY = e.clientY - H/2 - before.y*z;
     draw();
