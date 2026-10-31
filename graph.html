@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
   <meta name="theme-color" content="#f2f2ef">
-  <meta name="description" content="三禹的概念地图：一万一千条记录里长出来的一千八百个概念。">
-  <title>三禹 · 概念地图</title>
+  <meta name="description" content="三禹的概念地圖：一萬一千條記錄裡長出來的一千八百個概念。">
+  <title>三禹 · 概念地圖</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='16'%20fill='%23f2f2ef'/%3E%3Cpath%20d='M39,14%20C28,16%2021,26%2022.5,36%20C24,46%2033,52.5%2043,51.5%20C38,48.5%2035,43%2035.2,36.5%20C35.4,29%2038.5,20.5%2043.5,15.5%20C42,14.8%2040.5,14.4%2039,14%20Z'%20fill='none'%20stroke='%231d1d1b'%20stroke-width='3'%20stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85,23 +85,23 @@
   </style>
 </head>
 <body>
-<canvas id="c" aria-label="概念地图，可拖动节点、滚轮或双指缩放、点开看关联"></canvas>
+<canvas id="c" aria-label="概念地圖，可拖動節點、滾輪或雙指縮放、點開看關聯"></canvas>
 
 <header class="hud">
   <div class="top">
-    <h1>概念地图</h1>
-    <a class="back" href="index.html" aria-label="回首页">←</a>
+    <h1>概念地圖</h1>
+    <a class="back" href="index.html" aria-label="回首頁">←</a>
   </div>
-  <p class="sub">一万一千多条记录，抽出一千八百个概念。<br><span class="dim" id="counts"></span></p>
+  <p class="sub">一萬一千多條記錄，抽出一千八百個概念。<br><span class="dim" id="counts"></span></p>
 </header>
 
 <div class="controls">
-  <div class="chips" id="kind-chips" role="group" aria-label="按类型筛选"></div>
-  <p class="note"><button type="button" id="dens">密度 ≥15</button> · <span id="stat"></span> · <a href="about.html">完整档案 →</a></p>
+  <div class="chips" id="kind-chips" role="group" aria-label="按類型篩選"></div>
+  <p class="note"><button type="button" id="dens">密度 ≥15</button> · <span id="stat"></span> · <a href="about.html">完整檔案 →</a></p>
 </div>
 
 <section id="panel" hidden aria-live="polite">
-  <div class="p-top"><h2 id="p-title"></h2><button class="x" id="p-close" aria-label="关闭">×</button></div>
+  <div class="p-top"><h2 id="p-title"></h2><button class="x" id="p-close" aria-label="關閉">×</button></div>
   <p class="meta" id="p-meta"></p>
   <div class="rel" id="p-rel"></div>
 </section>
@@ -327,9 +327,9 @@
   }
 
   function updateStat(){
-    document.getElementById('stat').textContent = nodes.length+' 个概念 · '+visEdges.length+' 条关系';
+    document.getElementById('stat').textContent = nodes.length+' 個概念 · '+visEdges.length+' 條關係';
     document.getElementById('counts').textContent =
-      '收录 '+G.meta.node_count+' 个概念 / '+G.meta.edge_count+' 条关系 · 出现 ≥5 次才进来 · 已去掉人名与原话';
+      '收錄 '+G.meta.node_count+' 個概念 / '+G.meta.edge_count+' 條關係';
     document.getElementById('dens').textContent = '密度 ≥'+threshold;
   }
 
@@ -570,7 +570,7 @@
   function select(n){
     selected=n; draw();
     document.getElementById('p-title').textContent = n.id;
-    const bits=[KINDS[n.k], '出现 '+n.n+' 次'];
+    const bits=[KINDS[n.k], '出現 '+n.n+' 次'];
     if(n.yr) bits.push(n.yr);
     document.getElementById('p-meta').textContent = bits.join(' · ');
 
@@ -583,7 +583,7 @@
     if(!list.length){
       const p=document.createElement('p');
       p.className='empty-rel';
-      p.textContent='这个密度下没有可见的关系。';
+      p.textContent='這個密度下沒有可見的關係。';
       rel.append(p);
     }
     list.forEach(r=>{
