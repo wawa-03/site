@@ -666,15 +666,17 @@
     });
     grid.addEventListener('mouseleave',()=>tip.classList.remove('on'));
 
-    // —— 今年：当前年份的记录，上限 5 条 ——
+    // —— 今年：当前年份的记录，上限 6 条 ——
     // 选拔权重（他定的）：P1 念头次数（高频优先）> P2 花的时间（时长）> P3 阶段性 > P4 更近优先；选出后按时间正序展示
+    // 2026.10.31 补记：纯机械排序会把「芯片归档、阅读量 1」这类花絮顶上来，而真正的交付（需求提取系统、
+    // 选题系统）不在记录池里——已把它们补进 data.js 的 records，别再把算法结果当「最重要」
     const yearEvents=normalized
       .filter(r=>new Date(r.start).getUTCFullYear()===currentYear)
       .sort((a,b)=>((b.freq||1)-(a.freq||1))
         ||((b.w1-b.w0)-(a.w1-a.w0))
         ||((b.stage?1:0)-(a.stage?1:0))
         ||(b.start-a.start))
-      .slice(0,5)
+      .slice(0,6)
       .sort((a,b)=>a.start-b.start);
     const yearSec=$('year-section');
     if(!yearEvents.length){yearSec.remove()}
