@@ -666,7 +666,7 @@
     });
     grid.addEventListener('mouseleave',()=>tip.classList.remove('on'));
 
-    // —— 今年：当前年份的记录，上限 7 条 ——
+    // —— 今年：当前年份的记录，上限 5 条 ——
     // 选拔权重（他定的）：P1 念头次数（高频优先）> P2 花的时间（时长）> P3 阶段性 > P4 更近优先；选出后按时间正序展示
     const yearEvents=normalized
       .filter(r=>new Date(r.start).getUTCFullYear()===currentYear)
@@ -674,7 +674,7 @@
         ||((b.w1-b.w0)-(a.w1-a.w0))
         ||((b.stage?1:0)-(a.stage?1:0))
         ||(b.start-a.start))
-      .slice(0,3)
+      .slice(0,5)
       .sort((a,b)=>a.start-b.start);
     const yearSec=$('year-section');
     if(!yearEvents.length){yearSec.remove()}
